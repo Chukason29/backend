@@ -8,7 +8,7 @@ $data = json_decode($response, true);
 
 // Step 3: Create a new array with only name and email
 $result = [
-    'status' => "sucess",
+    'status' => "success",
     'message' => "My name is ".$data['name']." and my email is ".$data['email'],
 ];
 
