@@ -1,10 +1,9 @@
 <?php
 // Step 1: Fetch JSON from external API
-$url = 'https://jsonplaceholder.typicode.com/users/1'; // Example API with name and email
-$response = file_get_contents($url);
+$json = file_get_contents('php://input');
 
 // Step 2: Decode the JSON into an associative array
-$data = json_decode($response, true);
+$data = json_decode($json, true);
 
 // Step 3: Create a new array with only name and email
 $result = [
