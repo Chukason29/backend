@@ -52,7 +52,7 @@ try {
     if ($stmt->execute()) {
         $result = [
             'status' => "success",
-            'message' => "✅ User successfully inserted!"
+            'message' => "my name is $username and my email is $email",
         ];
     } else {
         $result = [
