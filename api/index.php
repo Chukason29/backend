@@ -2,11 +2,14 @@
 $config = require __DIR__ . '/../db.php';
 ob_end_clean();
 // Set CORS headers for both preflight and actual requests
-header("Access-Control-Allow-Origin: http://localhost:3000");
+header("Access-Control-Allow-Origin: http://127.0.0.1:3000");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
-//require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
+
+use Ramsey\Uuid\Uuid;
+
 // Handle preflight request and stop here
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     file_put_contents('log.txt', 'OPTIONS request received'.PHP_EOL, FILE_APPEND);
@@ -19,35 +22,42 @@ $json = file_get_contents('php://input');
 
 // Step 2: Decode the JSON into an associative array
 $data = json_decode($json, true);
-$username = $data['name'];
-$email = $data['email'];
+$name = $data['name'];
+//$email = $data['email'];
+$code = $data['code'];
+$location = $data['location'];
+$country = $data['country'];
+$address = $data['address'];
+$capacity = $data['capacity'];
+$capacity_unit = $data['capacity_unit'];
+$utilization = $data['utilization'];
+$active = FALSE;
 $password = 'secret123'; // plaintext, to be hashed
 $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+$user_uuid = Uuid::uuid4();
 
 // Step 3: Create a new array with only name and email
 try {
-    // SQL: Create users table if it doesn't exist
-    $sql = <<<SQL
-    CREATE TABLE IF NOT EXISTS warehouse_users (
-        id SERIAL PRIMARY KEY,
-        username VARCHAR(50) NOT NULL UNIQUE,
-        email VARCHAR(100) NOT NULL UNIQUE,
-        password_hash TEXT NOT NULL,
-        is_active BOOLEAN DEFAULT TRUE,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
-    SQL;
-
-    $pdo->exec($sql);
+    
     $stmt = $pdo->prepare("
-        INSERT INTO warehouse_users (username, email, password_hash)
-        VALUES (:username, :email, :password_hash)
+        INSERT INTO warehouses (id, name, code, location, country, address, capacity, 
+        capacity_unit, utilization, active)
+        VALUES (:id, :name, :code, :location, :country, :address, :capacity, 
+        :capacity_unit, :utilization, :active)
     ");
 
     // Bind values safely
-    $stmt->bindParam(':username', $username);
-    $stmt->bindParam(':email', $email);
-    $stmt->bindParam(':password_hash', $passwordHash);
+    $stmt->bindParam(':name', $name);
+    $stmt->bindParam(':id', $user_uuid);
+    $stmt->bindParam(':code', $code);
+    $stmt->bindParam(':location', $location);
+    $stmt->bindParam(':country', $country);
+    $stmt->bindParam(':address', $address);
+    $stmt->bindParam(':capacity', $capacity);
+    $stmt->bindParam(':capacity_unit', $capacity_unit);
+    $stmt->bindParam(':utilization', $utilization);
+    $stmt->bindParam(':active', $active);
+
 
     if ($stmt->execute()) {
         $result = [
