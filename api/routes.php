@@ -1,6 +1,7 @@
 <?php
 
 require __DIR__ . '/../db.php';
+require_once "./functions.php";
 
 ob_end_clean();
 
@@ -34,21 +35,24 @@ function respond($data, $code = 200) {
 try {
     if ($method === 'POST' && $uri === '/api/register') {
         if (!isset($data['name'], $data['email'], $data['password'])) {
-            respond(['error' => 'All fields are required'], 400);
+            respond(["status" => "false",'message' => 'All fields are required'], 400);
         }
 
         if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-            respond(['error' => 'Invalid email address'], 400);
+            respond(["status" => "false", 'message' => 'Invalid email address'], 400);
         }
+        if (empty($data["name"])) {
+            respond(["status" => "false", 'message' => 'Name is required'], 400);
+        }
+        $name = strtolower(sanitizeInput($data["name"]));
+        $email = strtolower(sanitizeInput($data["email"]));
 
         $hashedPassword = password_hash($data['password'], PASSWORD_BCRYPT);
 
-        /*$stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
-        $stmt->execute([$data['email']]);
-        if ($stmt->fetch()) {
-            respond(['error' => 'Email already registered'], 409);
-        }*/
-        //respond(['name' => $data["name"], "email" => $data["email"], "password"=> "$hashedPassword"], 409);
+        if (emailExists($pdo, $email)) {
+            respond(["status" => "false", 'message' => 'Account already exists'], 400);
+        }
+
 
         $stmt = $pdo->prepare("INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)");
         $stmt->execute([$data['name'], $data['email'], $hashedPassword]);

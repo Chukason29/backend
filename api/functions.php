@@ -1,0 +1,309 @@
+<?php
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+function isValidEmail($email) {
+    // 1️⃣ Check email format using PHP's built-in filter
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        return false; // Invalid format
+    }
+
+    return true; // Email is valid
+}
+function emailExists($pdo, $email) {
+    $stmt = $pdo->prepare("SELECT 1 FROM users WHERE email = ? LIMIT 1"); // Fast check
+    $stmt->execute([$email]);
+    return $stmt->fetchColumn() ? true : false;
+}
+function phoneExists($pdo, $phone) {
+    $stmt = $pdo->prepare("SELECT 1 FROM users WHERE phone = ? LIMIT 1"); // Fast check
+    $stmt->execute([$phone]);
+    return $stmt->fetchColumn() ? true : false;
+}
+function isAccountVerified($pdo, $phone) {
+    $stmt = $pdo->prepare("SELECT is_verified FROM users WHERE phone = ? LIMIT 1");
+    $stmt->execute([$phone]);
+    $verified = $stmt->fetchColumn();
+
+    return $verified === 1; // Returns true if verified, false otherwise
+}
+
+function sanitizeInput($input) {
+    $input = strip_tags($input); // Remove all HTML and PHP tags
+    $input = htmlspecialchars($input, ENT_QUOTES, 'UTF-8'); // Convert special characters to prevent XSS
+    return $input;
+}
+function outputData($status, $message){
+    return json_encode(["status" =>  $status, "message" => $message]);
+}
+function generateUUID($figure) {
+    return bin2hex(random_bytes($figure)); // 32-character unique ID
+}
+
+function generateTimedToken($user_id, $expiryTimeInSeconds) {
+    $secretKey = HIRE_SECRET_KEY; // Store securely in env/config
+    $expiresAt = time() + ($expiryTimeInSeconds); // Expiration timestamp
+
+    $data = json_encode([
+        "user_id" => $user_id,
+        "expires_at" => $expiresAt
+    ]);
+
+    // Generate a stronger signature using HMAC-SHA512
+    $signature = hash_hmac('sha512', $data, $secretKey, true);
+    return base64_encode($data . '.' . base64_encode($signature)); // Final token
+}
+function validateTimedToken($token) {
+    $secretKey = HIRE_SECRET_KEY; // Same key used in generation
+
+    $decoded = base64_decode($token);
+    if (!$decoded) return false;
+
+    list($data, $signature) = explode('.', $decoded, 2);
+
+    // Recalculate signature using HMAC-SHA512
+    $expectedSignature = hash_hmac('sha512', $data, $secretKey, true);
+
+    // Verify token integrity
+    if (!hash_equals(base64_decode($signature), $expectedSignature)) {
+        return false; // Invalid token
+    }
+
+    // Parse token data
+    $payload = json_decode($data, true);
+    if (!$payload || time() > $payload['expires_at']) {
+        return false; // Token expired
+    }
+
+    return $payload['user_id']; // Return valid user ID
+}
+function emailVerifyMessage($imageLink, $message){
+    return [
+        "image-link" => $imageLink,
+        "message" => $message
+    ];
+}
+
+
+
+function sendHTMLEmail($toEmail, $toName, $verificationLink, $myTemplate) {
+    require __DIR__ . '/PHPMailer/src/PHPMailer.php';
+    require __DIR__ . '/PHPMailer/src/SMTP.php';
+    require __DIR__ . '/PHPMailer/src/Exception.php';
+    $mail = new PHPMailer(true);
+
+    try {
+        // SMTP Configuration
+        $mail->isSMTP();
+        $mail->Host = 'hirepurchase.ng'; // SMTP server (e.g., hirepurchase.ng)
+        $mail->SMTPAuth = true;
+        $mail->Username = 'admin@hirepurchase.ng'; // SMTP Username
+        $mail->Password = HIRE_EMAIL_PASSWORD; // SMTP Password
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Encryption
+        $mail->Port = 587; // SMTP Port (Gmail: 587, Outlook: 587, SSL: 465)
+
+        // Sender and Recipient
+        $mail->setFrom('admin@hirepurchase.ng', 'Hire Purchase Investments');
+        $mail->addAddress($toEmail, $toName);
+        #$mail->addReplyTo('admin@hirepurchase.ng', 'Support');
+
+        // Load HTML Template
+        $htmlTemplate = file_get_contents($myTemplate);
+        $htmlTemplate = str_replace('{{name}}', $toName, $htmlTemplate);
+        $htmlTemplate = str_replace('{{link}}', $verificationLink, $htmlTemplate);
+
+        // Email Content
+        $mail->isHTML(true);
+        $mail->Subject = "Email Verification";
+        $mail->Body = $htmlTemplate;
+        $mail->AltBody = "Hello $toName, please verify your email by clicking this: $verificationLink"; // Fallback for text-only clients
+
+        // Send Email
+        if ($mail->send()) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (Exception $e) {
+        return "Error: {$mail->ErrorInfo}";
+    }
+}
+
+function investmentEmail($toEmail, $toName, $invoice_number, $product_name, $investment_amount, $expected_returns, $start_date, $one_year_later, $payment_ref, $myTemplate) {
+    require __DIR__ . '/PHPMailer/src/PHPMailer.php';
+    require __DIR__ . '/PHPMailer/src/SMTP.php';
+    require __DIR__ . '/PHPMailer/src/Exception.php';
+    $mail = new PHPMailer(true);
+
+    try {
+        // SMTP Configuration
+        $mail->isSMTP();
+        $mail->Host = 'hirepurchase.ng'; // SMTP server (e.g., hirepurchase.ng)
+        $mail->SMTPAuth = true;
+        $mail->Username = 'admin@hirepurchase.ng'; // SMTP Username
+        $mail->Password = HIRE_EMAIL_PASSWORD; // SMTP Password
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Encryption
+        $mail->Port = 587; // SMTP Port (Gmail: 587, Outlook: 587, SSL: 465)
+
+        // Sender and Recipient
+        $mail->setFrom('admin@hirepurchase.ng', 'Hire Purchase Investments');
+        $mail->addAddress($toEmail, $toName);
+        #$mail->addReplyTo('admin@hirepurchase.ng', 'Support');
+
+        // Load HTML Template
+        $htmlTemplate = file_get_contents($myTemplate);
+        $htmlTemplate = str_replace('{{name}}', $toName, $htmlTemplate);
+        $htmlTemplate = str_replace('{{invoice_number}}', $invoice_number, $htmlTemplate);
+        $htmlTemplate = str_replace('{{product_name}}', $product_name, $htmlTemplate);
+        $htmlTemplate = str_replace('{{investment_amount}}', $investment_amount, $htmlTemplate);
+        $htmlTemplate = str_replace('{{expected_returns}}', $expected_returns, $htmlTemplate);
+        $htmlTemplate = str_replace('{{start_date}}', $start_date, $htmlTemplate);
+        $htmlTemplate = str_replace('{{one_year_later}}', $one_year_later, $htmlTemplate);
+        $htmlTemplate = str_replace('{{payment_ref}}', $payment_ref, $htmlTemplate);
+
+
+        // Email Content
+        $mail->isHTML(true);
+        $mail->Subject = "Investment Message";
+        $mail->Body = $htmlTemplate;
+        #$mail->AltBody = "Hello $toName, please verify your email by clicking this: $verificationLink"; // Fallback for text-only clients
+
+        // Send Email
+        if ($mail->send()) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (Exception $e) {
+        return "Error: {$mail->ErrorInfo}";
+    }
+}
+
+function passwordEmail($toEmail, $reset_code, $expiresAt,$myTemplate) {
+    require __DIR__ . '/PHPMailer/src/PHPMailer.php';
+    require __DIR__ . '/PHPMailer/src/SMTP.php';
+    require __DIR__ . '/PHPMailer/src/Exception.php';
+    $mail = new PHPMailer(true);
+
+    try {
+        // SMTP Configuration
+        $mail->isSMTP();
+        $mail->Host = 'hirepurchase.ng'; // SMTP server (e.g., hirepurchase.ng)
+        $mail->SMTPAuth = true;
+        $mail->Username = 'admin@hirepurchase.ng'; // SMTP Username
+        $mail->Password = HIRE_EMAIL_PASSWORD; // SMTP Password
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Encryption
+        $mail->Port = 587; // SMTP Port (Gmail: 587, Outlook: 587, SSL: 465)
+
+        // Sender and Recipient
+        $mail->setFrom('admin@hirepurchase.ng', 'Password Reset');
+        $mail->addAddress($toEmail);
+        #$mail->addReplyTo('admin@hirepurchase.ng', 'Support');
+
+        // Load HTML Template
+        $htmlTemplate = file_get_contents($myTemplate);
+        $htmlTemplate = str_replace('{{reset_code}}', $reset_code, $htmlTemplate);
+        $htmlTemplate = str_replace('{{expiresAt}}', $expiresAt, $htmlTemplate);
+
+
+        // Email Content
+        $mail->isHTML(true);
+        $mail->Subject = "Hire Purchase Password Reset";
+        $mail->Body = $htmlTemplate;
+        #$mail->AltBody = "Hello $toName, please verify your email by clicking this: $verificationLink"; // Fallback for text-only clients
+
+        // Send Email
+        if ($mail->send()) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (Exception $e) {
+        return "Error: {$mail->ErrorInfo}";
+    }
+}
+
+function resetPasswordEmail($toEmail, $myTemplate) {
+    require __DIR__ . '/PHPMailer/src/PHPMailer.php';
+    require __DIR__ . '/PHPMailer/src/SMTP.php';
+    require __DIR__ . '/PHPMailer/src/Exception.php';
+    $mail = new PHPMailer(true);
+
+    try {
+        // SMTP Configuration
+        $mail->isSMTP();
+        $mail->Host = 'hirepurchase.ng'; // SMTP server (e.g., hirepurchase.ng)
+        $mail->SMTPAuth = true;
+        $mail->Username = 'admin@hirepurchase.ng'; // SMTP Username
+        $mail->Password = HIRE_EMAIL_PASSWORD; // SMTP Password
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Encryption
+        $mail->Port = 587; // SMTP Port (Gmail: 587, Outlook: 587, SSL: 465)
+
+        // Sender and Recipient
+        $mail->setFrom('admin@hirepurchase.ng', 'Successful Password Reset');
+        $mail->addAddress($toEmail);
+        #$mail->addReplyTo('admin@hirepurchase.ng', 'Support');
+
+        // Load HTML Template
+        $htmlTemplate = file_get_contents($myTemplate);
+        $htmlTemplate = str_replace('{{email}}', $toEmail, $htmlTemplate);
+
+
+        // Email Content
+        $mail->isHTML(true);
+        $mail->Subject = "Hire Purchase Password Reset Successful";
+        $mail->Body = $htmlTemplate;
+
+        // Send Email
+        if ($mail->send()) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (Exception $e) {
+        return "Error: {$mail->ErrorInfo}";
+    }
+}
+
+function secure_session_start() {
+    /*if (isset($_SESSION)) {
+        session_destroy();
+    }*/
+    session_set_cookie_params([
+        'lifetime' => SESSION_LIFETIME,
+        'path' => '/',
+        'domain' => $_SERVER['HTTP_HOST'],
+        'secure' => SECURE_COOKIES,
+        'httponly' => true,
+        'samesite' => 'Strict',
+    ]);
+    ini_set("session.cookie_httponly", 1);
+    ini_set("session.cookie_secure", 1);
+    ini_set("session.use_strict_mode", 1);
+    session_start();
+    
+    // Prevent session fixation
+    if (!isset($_SESSION['initiated'])) {
+        session_regenerate_id(true);
+        $_SESSION['initiated'] = true;
+    }
+
+    // Secure session settings
+}
+function generateUserId($prefix = "HPA") {
+    // Get the current date in YYMMDD format
+    $datePart = date("ymd");
+
+    // Generate a random alphanumeric string (6 characters)
+    $randomPart = strtoupper(substr(bin2hex(random_bytes(3)), 0, 6));
+
+    // Generate a checksum using a hash
+    $checksum = strtoupper(substr(hash('crc32', $prefix . $datePart . $randomPart), 0, 2));
+
+    // Combine all parts
+    $userId = $prefix . $datePart . $randomPart . $checksum;
+
+    return $userId;
+}
