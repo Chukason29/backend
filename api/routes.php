@@ -43,11 +43,11 @@ try {
 
         $hashedPassword = password_hash($data['password'], PASSWORD_BCRYPT);
 
-        $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+        /*$stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
         $stmt->execute([$data['email']]);
         if ($stmt->fetch()) {
             respond(['error' => 'Email already registered'], 409);
-        }
+        }*/
 
         $stmt = $pdo->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
         $stmt->execute([$data['name'], $data['email'], $hashedPassword]);
