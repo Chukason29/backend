@@ -49,8 +49,6 @@ try {
             respond(['error' => 'Email already registered'], 409);
         }*/
         //respond(['name' => $data["name"], "email" => $data["email"], "password"=> "$hashedPassword"], 409);
-        var_dump($pdo);
-        exit();
 
         $stmt = $pdo->prepare("INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)");
         $stmt->execute([$data['name'], $data['email'], $hashedPassword]);
