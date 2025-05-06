@@ -27,8 +27,7 @@ try {
         token VARCHAR(500) NOT NULL UNIQUE,  -- Secure token (hashed or random)
         is_used BOOLEAN DEFAULT FALSE,  -- Track if token has been used
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  -- Timestamp for expiry tracking
-        FOREIGN KEY (id) REFERENCES users(id) ON DELETE CASCADE,  -- Ensure referential integrity
-        INDEX idx_id (id)  -- Composite index for faster lookups
+        FOREIGN KEY (id) REFERENCES users(id) ON DELETE CASCADE  -- Ensure referential integrity
     );
     SQL;
 
