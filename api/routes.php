@@ -32,7 +32,7 @@ function respond($data, $code = 200) {
 }
 
 try {
-    if ($method === 'POST' && $uri === '/register') {
+    if ($method === 'POST' && $uri === '/api/register') {
         if (!isset($data['name'], $data['email'], $data['password'])) {
             respond(['error' => 'All fields are required'], 400);
         }
