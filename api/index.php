@@ -5,13 +5,14 @@ $pdo = require __DIR__ . '/../db.php';
 ob_end_clean();
 
 $uri = rtrim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
-echo $uri;exit();
 $method = $_SERVER['REQUEST_METHOD'];
 
 // Set CORS headers
 header("Access-Control-Allow-Origin: http://127.0.0.1:3000");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
+file_put_contents('log.txt', "REQUEST_URI: " . $_SERVER['REQUEST_URI'] . PHP_EOL, FILE_APPEND);
+
 
 // Handle OPTIONS preflight
 if ($method === 'OPTIONS') {
