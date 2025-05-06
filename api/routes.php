@@ -49,7 +49,7 @@ try {
             respond(['error' => 'Email already registered'], 409);
         }*/
 
-        $stmt = $pdo->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
+        $stmt = $pdo->prepare("INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)");
         $stmt->execute([$data['name'], $data['email'], $hashedPassword]);
 
         respond(['message' => 'User registered successfully'], 201);
