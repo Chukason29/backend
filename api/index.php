@@ -1,6 +1,7 @@
 <?php
 $config = require __DIR__ . '/../db.php';
 ob_end_clean();
+$uri = rtrim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
 // Set CORS headers for both preflight and actual requests
 header("Access-Control-Allow-Origin: http://127.0.0.1:3000");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
@@ -19,56 +20,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 // Step 1: Fetch JSON from external API
 $json = file_get_contents('php://input');
+$data = json_decode(file_get_contents('php://input'), true);
 
-// Step 2: Decode the JSON into an associative array
-$data = json_decode($json, true);
-$name = $data['name'];
-//$email = $data['email'];
-$code = $data['code'];
-$location = $data['location'];
-$country = $data['country'];
-$address = $data['address'];
-$capacity = $data['capacity'];
-$capacity_unit = $data['capacity_unit'];
-$utilization = $data['utilization'];
-$active = false;
-$password = 'secret123'; // plaintext, to be hashed
-$passwordHash = password_hash($password, PASSWORD_DEFAULT);
-$user_uuid = Uuid::uuid4();
 
-// Step 3: Create a new array with only name and email
 try {
     
-    $stmt = $pdo->prepare("
-        INSERT INTO warehouses (id, name, code, location, country, address, capacity, 
-        capacity_unit, utilization, active)
-        VALUES (:id, :name, :code, :location, :country, :address, :capacity, 
-        :capacity_unit, :utilization, :active)
-    ");
-
-    // Bind values safely
-    $stmt->bindParam(':name', $name);
-    $stmt->bindParam(':id', $user_uuid);
-    $stmt->bindParam(':code', $code);
-    $stmt->bindParam(':location', $location);
-    $stmt->bindParam(':country', $country);
-    $stmt->bindParam(':address', $address);
-    $stmt->bindParam(':capacity', $capacity);
-    $stmt->bindParam(':capacity_unit', $capacity_unit);
-    $stmt->bindParam(':utilization', $utilization);
-    $stmt->bindParam(':active', $active);
-
-
-    if ($stmt->execute()) {
-        $result = [
-            'status' => "success",
-            'message' => "my name is $username and my email is $email",
-        ];
-    } else {
-        $result = [
-            'status' => "error",
-            'message' => "⚠️ Failed to insert user."
-        ];
+    if ($method === 'POST' && $uri === '/register') {
+        if (!isset($data['name'], $data['email'], $data['password'])) {
+            respond(['error' => 'All fields are required'], 400);
+        }
+    
+        // Validate email format
+        if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            respond(['error' => 'Invalid email address'], 400);
+        }
+    
+        // Hash the password
+        $hashedPassword = password_hash($data['password'], PASSWORD_BCRYPT);
+    
+        // Check if email already exists
+        $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+        $stmt->execute([$data['email']]);
+        if ($stmt->fetch()) {
+            respond(['error' => 'Email already registered'], 409);
+        }
+    
+        // Insert into DB
+        $stmt = $pdo->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
+        $stmt->execute([$data['name'], $data['email'], $hashedPassword]);
+    
+        respond(['message' => 'User registered successfully'], 201);
     }
 
 } catch (PDOException $e) {
