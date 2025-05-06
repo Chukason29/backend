@@ -5,7 +5,7 @@ $pdo = require __DIR__ . '/../db.php';
 ob_end_clean();
 
 $uri = rtrim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
-echo $_SERVER['REQUEST_URI'];exit();
+echo $uri;exit();
 $method = $_SERVER['REQUEST_METHOD'];
 
 // Set CORS headers
