@@ -97,15 +97,15 @@ function sendHTMLEmail($toEmail, $toName, $verificationLink, $myTemplate) {
     try {
         // SMTP Configuration
         $mail->isSMTP();
-        $mail->Host = 'hirepurchase.ng'; // SMTP server (e.g., hirepurchase.ng)
+        $mail->Host = 'trendsaf.co'; // SMTP server (e.g., hirepurchase.ng)
         $mail->SMTPAuth = true;
-        $mail->Username = 'admin@hirepurchase.ng'; // SMTP Username
-        $mail->Password = HIRE_EMAIL_PASSWORD; // SMTP Password
+        $mail->Username = 'support@trendsaf.co'; // SMTP Username
+        $mail->Password = $config['mail']['password']; // SMTP Password
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Encryption
         $mail->Port = 587; // SMTP Port (Gmail: 587, Outlook: 587, SSL: 465)
 
         // Sender and Recipient
-        $mail->setFrom('admin@hirepurchase.ng', 'Hire Purchase Investments');
+        $mail->setFrom('support@trendsaf.co', 'Trendsaf BaseFood');
         $mail->addAddress($toEmail, $toName);
         #$mail->addReplyTo('admin@hirepurchase.ng', 'Support');
 
