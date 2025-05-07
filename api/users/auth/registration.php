@@ -49,7 +49,7 @@ $verifyLink = $config['secret']['SECRET_KEY'].'/api/users/auth/verify?token='.$t
     ]);
 
      #TODO commit data to database and send link to email address
-     if ($pdo->commit() && sendHTMLEmail($email, $name, $verifyLink, dirname(__DIR__, 3)."/templates/email_verification.html")) {
+    if ($pdo->commit() && sendHTMLEmail($email, $name, $verifyLink, dirname(__DIR__, 3)."/templates/email_verification.html")) {
         echo json_encode(["status" => "success", "message" => "Registration successful, link sent to your email"]);
         exit;
     }else{
