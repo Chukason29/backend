@@ -33,7 +33,7 @@ $token = generateTimedToken($email, 86400); //expires in 24hours after creation
 $verifyLink = $config['secret']['SECRET_KEY'].'/api/users/auth/verify?token='.$token;
 
     $pdo->beginTransaction();
-    $stmt1 = $pdo->prepare("INSERT INTO users ( name, email, hashed_password) VALUES (:name, :email, :hashed_password)");
+    $stmt1 = $pdo->prepare("INSERT INTO users ( name, email, password_hash) VALUES (:name, :email, :hashed_password)");
     $stmt1->execute([
         ':name' => $name,
         ':email' => $email,
