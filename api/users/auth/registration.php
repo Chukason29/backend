@@ -28,11 +28,23 @@ $hashedPassword = password_hash($data['password'], PASSWORD_BCRYPT);
 if (emailExists($pdo, $email)) {
     respond(["status" => "false", 'message' => 'Account already exists'], 400);
 }
+#TODO ==> Create a timed token based on the user's email and attach to the base url
+$token = generateTimedToken($email, 86400); //expires in 24hours after creation
 
-$base_url = $config['url']['BASE_URL'];
-respond(['message' => $base_url], 200);
-exit();
-$stmt = $pdo->prepare("INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)");
-$stmt->execute([$data['name'], $data['email'], $hashedPassword]);
+$pdo->beginTransaction();
+    $stmt1 = $pdo->prepare("INSERT INTO users ( name, email, hashed_password) VALUES (:name, :email, :hashed_password)");
+    $stmt1->execute([
+        ':name' => $name,
+        ':email' => $email,
+        ':hashed_password' => $hashedPassword, // Always hash passwords
+        
+    ]);
+
+    #TODO ==> input the token to the token table with false as the check column
+    $stmt2 = $pdo->prepare("INSERT INTO link_token (email, token) VALUES (:email, :token)");
+    $stmt2->execute([
+        ':email' => $email,
+        ':token' => $token
+    ]);
 
 respond(['message' => 'User registered successfully'], 201);

@@ -55,6 +55,10 @@ return [
         'audience'   => $_ENV['JWT_AUDIENCE']   ?? null,
         'expires_in' => (int)($_ENV['JWT_EXPIRES_IN'] ?? null),
     ],
+    
+    'secret' => [
+        'SECRET_KEY' => $_ENV['SECRET_KEY']     ?? null,
+    ],
 
     //
     // CORS
