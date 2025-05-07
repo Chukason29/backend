@@ -29,7 +29,9 @@ if (emailExists($pdo, $email)) {
     respond(["status" => "false", 'message' => 'Account already exists'], 400);
 }
 
-
+$base_url = $config['url']['BASE_URL'];
+respond(['message' => $base_url], 200);
+exit();
 $stmt = $pdo->prepare("INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)");
 $stmt->execute([$data['name'], $data['email'], $hashedPassword]);
 
