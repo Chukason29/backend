@@ -43,7 +43,7 @@ function generateUUID($figure) {
 }
 
 function generateTimedToken($user_id, $expiryTimeInSeconds) {
-    $secretKey = HIRE_SECRET_KEY; // Store securely in env/config
+    $secretKey = $config['secret']['SECRET_KEY']; // Store securely in env/config
     $expiresAt = time() + ($expiryTimeInSeconds); // Expiration timestamp
 
     $data = json_encode([

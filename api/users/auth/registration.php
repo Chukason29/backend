@@ -31,6 +31,8 @@ if (emailExists($pdo, $email)) {
 #TODO ==> Create a timed token based on the user's email and attach to the base url
 $token = generateTimedToken($email, 86400); //expires in 24hours after creation
 
+respond(["message" => 'Token generated successfully', 'token' => $token], 200);
+
 $pdo->beginTransaction();
     $stmt1 = $pdo->prepare("INSERT INTO users ( name, email, hashed_password) VALUES (:name, :email, :hashed_password)");
     $stmt1->execute([
