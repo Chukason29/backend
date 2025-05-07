@@ -31,7 +31,7 @@ if (emailExists($pdo, $email)) {
 #TODO ==> Create a timed token based on the user's email and attach to the base url
 $token = generateTimedToken($email, 86400); //expires in 24hours after creation
 $verifyLink = $config['secret']['SECRET_KEY'].'/api/users/auth/verify?token='.$token;
-
+try {
     $pdo->beginTransaction();
     $stmt1 = $pdo->prepare("INSERT INTO users ( name, email, password_hash) VALUES (:name, :email, :hashed_password)");
     $stmt1->execute([
@@ -57,3 +57,11 @@ $verifyLink = $config['secret']['SECRET_KEY'].'/api/users/auth/verify?token='.$t
     }
 
 respond(['message' => 'User registered successfully'], 201);
+} catch (PDOException $e) {
+    $pdo->rollBack();
+    respond(['error' => 'Database error: ' . $e->getMessage()], 500);
+} catch (Exception $e) {
+    $pdo->rollBack();
+    respond(['error' => 'Error: ' . $e->getMessage()], 500);
+}
+    
