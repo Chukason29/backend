@@ -119,11 +119,13 @@ function sendHTMLEmail($toEmail, $toName, $verificationLink, $myTemplate) {
         $mail->Subject = "Email Verification";
         $mail->Body = $htmlTemplate;
         $mail->AltBody = "Hello $toName, please verify your email by clicking this: $verificationLink"; // Fallback for text-only clients
-
+        $mail->SMTPDebug = 3; // Or 3 for more details
+        $mail->Debugoutput = 'error_log'; // Sends debug info to PHP error log
         // Send Email
         if ($mail->send()) {
             return true;
         } else {
+
             return false;
         }
     } catch (Exception $e) {
