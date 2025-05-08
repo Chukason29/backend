@@ -55,7 +55,7 @@ return [
         'audience'   => $_ENV['JWT_AUDIENCE']   ?? null,
         'expires_in' => (int)($_ENV['JWT_EXPIRES_IN'] ?? null),
     ],
-    
+
     'secret' => [
         'SECRET_KEY' => $_ENV['SECRET_KEY']     ?? null,
     ],
@@ -107,8 +107,8 @@ return [
     // MAIL
     //
     'mail' => [
-        'host'       => $_ENV['MAIL_HOST']       ?? 'smtp.mailtrap.io',
-        'port'       => (int)($_ENV['MAIL_PORT'] ?? 2525),
+        'host'       => $_ENV['MAIL_HOST']       ?? 'smtp.gmail.com',
+        'port'       => (int)($_ENV['MAIL_PORT']) ?? 587,
         'username'   => $_ENV['MAIL_USERNAME']   ?? null,
         'password'   => $_ENV['MAIL_PASSWORD']   ?? null,
         'encryption' => $_ENV['MAIL_ENCRYPTION'] ?? 'tls',

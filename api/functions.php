@@ -97,7 +97,7 @@ function sendHTMLEmail($toEmail, $toName, $verificationLink, $myTemplate) {
     try {
         // SMTP Configuration
         $mail->isSMTP();
-        $mail->Host = 'trendsaf.co'; // SMTP server (e.g., hirepurchase.ng)
+        $mail->Host = $config['mail']['host']; // SMTP server (e.g., hirepurchase.ng)
         $mail->SMTPAuth = true;
         $mail->Username = 'support@trendsaf.co'; // SMTP Username
         $mail->Password = $config['mail']['password']; // SMTP Password
@@ -125,7 +125,6 @@ function sendHTMLEmail($toEmail, $toName, $verificationLink, $myTemplate) {
         if ($mail->send()) {
             return true;
         } else {
-
             return false;
         }
     } catch (Exception $e) {
