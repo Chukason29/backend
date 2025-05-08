@@ -52,7 +52,8 @@ try {
         respond(["status" => "success", "message" => "mail sent successfully"]);
         exit;
     }else{
-        respond(["status" => "error", "message" => "mail not sent"]);
+        error_log("Failed to send email to $email");
+        respond(["status" => "error", "message" => "Failed to send email"], 500);
         exit;
     }
 
