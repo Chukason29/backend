@@ -97,7 +97,7 @@ function sendHTMLEmail($toEmail, $toName, $verificationLink, $myTemplate) {
     try {
         // SMTP Configuration
         $mail->isSMTP();
-        $mail->Host = $config['mail']['host']; // SMTP server (e.g., hirepurchase.ng)
+        $mail->Host = "smtp.gmail.com"; // SMTP server (e.g., hirepurchase.ng)
         $mail->SMTPAuth = true;
         $mail->Username = 'support@trendsaf.co'; // SMTP Username
         $mail->Password = $config['mail']['password']; // SMTP Password
@@ -268,43 +268,3 @@ function resetPasswordEmail($toEmail, $myTemplate) {
     }
 }
 
-function secure_session_start() {
-    /*if (isset($_SESSION)) {
-        session_destroy();
-    }*/
-    session_set_cookie_params([
-        'lifetime' => SESSION_LIFETIME,
-        'path' => '/',
-        'domain' => $_SERVER['HTTP_HOST'],
-        'secure' => SECURE_COOKIES,
-        'httponly' => true,
-        'samesite' => 'Strict',
-    ]);
-    ini_set("session.cookie_httponly", 1);
-    ini_set("session.cookie_secure", 1);
-    ini_set("session.use_strict_mode", 1);
-    session_start();
-    
-    // Prevent session fixation
-    if (!isset($_SESSION['initiated'])) {
-        session_regenerate_id(true);
-        $_SESSION['initiated'] = true;
-    }
-
-    // Secure session settings
-}
-function generateUserId($prefix = "HPA") {
-    // Get the current date in YYMMDD format
-    $datePart = date("ymd");
-
-    // Generate a random alphanumeric string (6 characters)
-    $randomPart = strtoupper(substr(bin2hex(random_bytes(3)), 0, 6));
-
-    // Generate a checksum using a hash
-    $checksum = strtoupper(substr(hash('crc32', $prefix . $datePart . $randomPart), 0, 2));
-
-    // Combine all parts
-    $userId = $prefix . $datePart . $randomPart . $checksum;
-
-    return $userId;
-}
