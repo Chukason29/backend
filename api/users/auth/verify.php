@@ -1,7 +1,7 @@
 <?php
 
     #TODO ==> check if the token is valid and not expired
-    $sql = "SELECT * FROM link_token WHERE token = :token AND is_used = false AND created_at > NOW() - INTERVAL '1 day'";
+    $sql = "SELECT * FROM link_token WHERE token = :token AND is_used = false AND created_at < NOW() - INTERVAL '48 hours'";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([':token' => $verify_token]);
     $tokenData = $stmt->fetch(PDO::FETCH_ASSOC);
