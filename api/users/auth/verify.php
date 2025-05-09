@@ -1,7 +1,7 @@
 <?php
     
     #TODO ==> check if the token is valid and not expired
-    $email = $verify_token;
+    $email = getEmailFromToken($verify_token);
     respond(["status" => "success","email" => $email], 200);exit;
     
 

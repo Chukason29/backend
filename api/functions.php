@@ -55,30 +55,42 @@ function generateTimedToken($email, $expiryTimeInSeconds) {
     $signature = hash_hmac('sha512', $data, $secretKey, true);
     return base64_encode($data . '.' . base64_encode($signature)); // Final token
 }
-function validateTimedToken($token) {
-    $secretKey = $config['secret']['SECRET_KEY']; // Same key used in generation
+function getEmailFromToken($token) {
+    global $config; // Assuming you use $config for the secret key
 
+    $secretKey = $config['secret']['SECRET_KEY'];
+
+    // Decode the token
     $decoded = base64_decode($token);
-    if (!$decoded) return false;
+    if ($decoded === false) return false;
 
-    list($data, $signature) = explode('.', $decoded, 2);
+    // Split into data and signature
+    $parts = explode('.', $decoded);
+    if (count($parts) !== 2) return false;
 
-    // Recalculate signature using HMAC-SHA512
+    $data = $parts[0];
+    $providedSignature = base64_decode($parts[1]);
+
+    // Validate signature
     $expectedSignature = hash_hmac('sha512', $data, $secretKey, true);
-
-    // Verify token integrity
-    if (!hash_equals(base64_decode($signature), $expectedSignature)) {
-        return false; // Invalid token
+    if (!hash_equals($expectedSignature, $providedSignature)) {
+        return false; // Signature doesn't match
     }
 
-    // Parse token data
+    // Decode JSON
     $payload = json_decode($data, true);
-    if (!$payload || time() > $payload['expires_at']) {
+    if (!is_array($payload) || !isset($payload['email'], $payload['expires_at'])) {
+        return false;
+    }
+
+    // Check if token is expired
+    if (time() > $payload['expires_at']) {
         return false; // Token expired
     }
 
-    return $payload['email']; // Return valid user ID
+    return $payload['email']; // ✅ Return extracted email
 }
+
 function emailVerifyMessage($imageLink, $message){
     return [
         "image-link" => $imageLink,
