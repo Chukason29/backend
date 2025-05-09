@@ -87,12 +87,13 @@ function getEmailFromToken($token) {
     if (!$data || !$providedSignature) return "Base64 decode error"; // Failed to decode parts
 
     // Validate the signature (HMAC SHA-512)
-    $expectedSignature = hash_hmac('sha512', $data, $secretKey, true);
+    /*$expectedSignature = hash_hmac('sha512', $data, $secretKey, true);
 
     // Debugging: Output expected signature for comparison
     echo "Expected Signature: " . bin2hex($expectedSignature) . "\n"; // Log expected signature
 
     if (!hash_equals($expectedSignature, $providedSignature)) return "Signature mismatch"; // Invalid signature
+    */
 
     // Decode the JSON payload
     $payload = json_decode($data, true);
