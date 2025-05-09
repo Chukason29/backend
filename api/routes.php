@@ -44,6 +44,10 @@ try {
         require_once __DIR__ . '/users/auth/verify.php';
         exit;
     }
+    if ($method === 'GET' && $uri === '/api/login') {
+        require_once __DIR__ . '/users/auth/login.php';
+        exit;
+    }
 
     // Fallback
     respond(['error' => 'Route not found'], 404);
