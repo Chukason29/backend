@@ -31,10 +31,10 @@ $hashedPassword = password_hash($data['password'], PASSWORD_BCRYPT);
 $token = generateTimedToken($email, 86400); //expires in 24hours after creation
 $verifyLink = $config['url']['BASE_URL'].'/api/users/auth/verify?token='.$token;
 if (sendHTMLEmail($email, $name, $verifyLink, dirname(__DIR__, 2)."/templates/email_verification.html")) {
-        respond(["status" => "success", "message" => "Registration successful, link sent to your email"]);
+        respond(["status" => "success", "message" => "Registration successful, link sent to your email"], 200);
         exit;
 }else{
-    respond(["status" => "error", "message" => "Registration is unsuccessful"]);   
+    respond(["status" => "error", "message" => "Registration is unsuccessful"], 200);   
 } exit;
 #TODO ==> Create a timed token based on the user's email and attach to the base url
 
@@ -61,10 +61,10 @@ try {
 
      #TODO commit data to database and send link to email address
     if ($pdo->commit() && sendHTMLEmail($email, $name, $verifyLink, dirname(__DIR__, 2)."/templates/email_verification.html")) {
-        respond(["status" => "success", "message" => "Registration successful, link sent to your email"]);
+        respond(["status" => "success", "message" => "Registration successful, link sent to your email"], 200);
         exit;
     }else{
-        respond(["status" => "error", "message" => "Registration is unsuccessful"]);   
+        respond(["status" => "error", "message" => "Registration is unsuccessful"], 200);   
     }
 
 respond(['message' => 'User registered successfully'], 201);
