@@ -8,9 +8,9 @@
     $stmt->bindValue(':is_used', true, PDO::PARAM_BOOL); // ✅ This is correct
     $stmt->execute();
     $tokenData = $stmt->fetch(PDO::FETCH_ASSOC);
-    if (!$tokenData) {
+    /*if (!$tokenData) {
         respond(["error" => "Invalid or expired token"], 400);
-    }
+    }*/
     respond(["status" => "success","token" => $tokenData], 200);
     #TODO ==> check if the token is already used or not
 
