@@ -48,7 +48,7 @@ try {
         ':token' => $token
     ]);
 
-    if(sendHTMLEmail($email, $name, $verifyLink, dirname(__DIR__, 3)."/templates/email_verification.html")){
+    if(sendHTMLEmail($email, $name, $verifyLink, dirname(__DIR__, 2)."/templates/email_verification.html")){
         respond(["status" => "success", "message" => "mail sent successfully"]);
         exit;
     }else{
