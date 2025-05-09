@@ -5,10 +5,10 @@
     $sql = "SELECT * FROM link_token WHERE token = :token AND is_used = :is_used AND created_at < NOW() - INTERVAL '48 hours'";
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(':token', $verify_token, PDO::PARAM_STR);
-    $stmt->bindValue(':is_used', true, PDO::PARAM_BOOL); // ✅ This is correct
+    $stmt->bindValue(':is_used', false, PDO::PARAM_BOOL); // ✅ This is correct
     $stmt->execute();
     
-    if ($tokenData) {
+    if (!$tokenData) {
         respond(["status" => "false", "message"=> "Invalid or expired token"], 400);
         exit;
     }else{
