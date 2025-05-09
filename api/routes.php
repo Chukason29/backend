@@ -36,7 +36,7 @@ try {
     if ($method === 'POST' && $uri === '/api/register') {
         require_once __DIR__ . '/users/auth/registration.php';
     }
-    if ($method === 'POST' && $uri === '/api/verify') {
+    if ($method === 'GET' && $uri === '/api/verify') {
         $verify_token = $_GET['token'] ?? null;
         if (empty($verify_token)) {
             respond(['error' => 'Token is required'], 400);
