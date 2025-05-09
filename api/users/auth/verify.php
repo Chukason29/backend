@@ -12,7 +12,7 @@
         $pdo->beginTransaction();
         $updateToken = $pdo->prepare("UPDATE link_token SET is_used = :is_used WHERE email = :email");
         $updateToken->bindValue(':is_used', TRUE, PDO::PARAM_BOOL);
-        $stmt->bindValue(':email', $email, PDO::PARAM_STR);
+        $updateToken->bindValue(':email', $email, PDO::PARAM_STR);
         $updateToken->execute();
 
         // Update is_active in users table
