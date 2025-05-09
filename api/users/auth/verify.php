@@ -24,9 +24,11 @@
         
     // Commit transaction
         if ($pdo->commit()) {
-            header("Location:". $config['url']['BASE_URL']."/verification-success.html");
+            header("Location: " . rtrim($config['url']['BASE_URL'], '/') . "/verification-success.html");
+            exit;
         }else{
-            header("Location:". $config['url']['BASE_URL']."/verification-failed.html");
+            header("Location: " . rtrim($config['url']['BASE_URL'], '/') . "/verification-failure.html");
+            exit;
         }
     } catch (PDOException $e) {
         $pdo->rollBack();
