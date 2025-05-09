@@ -21,17 +21,6 @@ if ($method === 'OPTIONS') {
     exit;
 }
 
-// JSON body
-$data = json_decode(file_get_contents('php://input'), true);
-
-// Respond helper
-function respond($data, $code = 200) {
-    http_response_code($code);
-    header('Content-Type: application/json');
-    echo json_encode($data);
-    exit;
-}
-
 try {
     if ($method === 'POST' && $uri === '/api/register') {
         require_once __DIR__ . '/users/auth/registration.php';
