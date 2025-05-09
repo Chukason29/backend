@@ -1,5 +1,5 @@
 <?php
-    respond(["status" => "false", 'message' => $verify_token], 200);exit;
+    
     #TODO ==> check if the token is valid and not expired
     $sql = "SELECT * FROM link_token WHERE token = :token";
     $stmt = $pdo->prepare($sql);
@@ -9,7 +9,7 @@
     $tokenData = $stmt->fetch(PDO::FETCH_ASSOC);
     
     if (!$tokenData) {
-        respond(["status" => "false", "message"=> "Invalid or expired token"], 400);
+        respond(["status" => "false", "message"=> $tokenData], 400);
         exit;
     }else{
         
