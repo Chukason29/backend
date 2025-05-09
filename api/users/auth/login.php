@@ -16,8 +16,19 @@
         exit;
     }
 
+    $email = sanitizeInput($data['email']);
+    $password = sanitizeInput($data['password']);
+
+
     #TODO ==> Check if account exists
-    if (!emailExists($pdo, $email)) {
-        respond(["status" => "false", 'message' => 'Account does not exists'], 400);
-        exit;
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email");
+    $stmt->bindValue(':email', $email);
+    $stmt->execute();
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$user || !$user['is_active']) return "Account not active or doesn't exist";
+
+    if (password_verify($password, $user['password_hash'])) {
+        // Return session or token info
+        return "Login successful";
     }
