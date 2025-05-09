@@ -48,51 +48,54 @@ function generateTimedToken($email, $expiryTimeInSeconds) {
     $secretKey = $config['secret']['SECRET_KEY'];
     $expiresAt = time() + $expiryTimeInSeconds;
 
+    // Create the data array (email and expiration time)
     $data = json_encode([
         "email" => $email,
         "expires_at" => $expiresAt
     ]);
 
+    // Generate the HMAC signature
     $signature = hash_hmac('sha512', $data, $secretKey, true);
 
-    // Encode both parts separately and join with a dot
+    // Encode the data and signature separately in base64 and join with a dot
     $encodedData = base64_encode($data);
     $encodedSignature = base64_encode($signature);
 
+    // Return the combined token
     return $encodedData . '.' . $encodedSignature;
 }
+
+
 
 function getEmailFromToken($token) {
     global $config;
 
     $secretKey = $config['secret']['SECRET_KEY'];
 
-    // Split the token first
+    // Split the token into data and signature parts
     $parts = explode('.', $token);
-    if (count($parts) !== 2) return "explode error";
+    if (count($parts) !== 2) return false; // Invalid token structure
 
     list($encodedData, $encodedSignature) = $parts;
 
-    // Decode both parts separately
-    $data = base64_decode($encodedData); // Removed true flag
-    $providedSignature = base64_decode($encodedSignature); // Removed true flag
+    // Decode both parts
+    $data = base64_decode($encodedData);
+    $providedSignature = base64_decode($encodedSignature);
 
-    // Check if decoding failed
-    if (!$data || !$providedSignature) return "base64_decode error: " . var_export($token, true);
-
-    // Validate the signature
+    // Validate signature
     $expectedSignature = hash_hmac('sha512', $data, $secretKey, true);
-    if (!hash_equals($expectedSignature, $providedSignature)) return "signature error";
+    if (!hash_equals($expectedSignature, $providedSignature)) return false; // Signature doesn't match
 
-    // Decode JSON payload
+    // Decode the data (contains the email and expiration time)
     $payload = json_decode($data, true);
-    if (!is_array($payload) || !isset($payload['email'], $payload['expires_at'])) return "payload error";
+    if (!is_array($payload) || !isset($payload['email'], $payload['expires_at'])) return false; // Invalid token format
 
-    // Check expiration
-    if (time() > $payload['expires_at']) return "expired error";
+    // Check if the token has expired
+    if (time() > $payload['expires_at']) return false; // Token expired
 
-    return $payload['email'];
+    return $payload['email']; // Return the email if everything is valid
 }
+
 
 
 
