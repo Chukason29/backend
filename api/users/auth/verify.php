@@ -1,8 +1,8 @@
 <?php
     
     #TODO ==> check if the token is valid and not expired
-    $email = validateTimedToken($token);
-    respond(["status" => "success","email" => $email], 200);
+    $email = validateTimedToken($verify_token);
+    respond(["status" => "success","email" => $email], 200);exit;
     
 
     #TODO ==> If the token is valid and not expired, update the token table with true as the check column
