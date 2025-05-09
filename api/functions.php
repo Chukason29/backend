@@ -97,10 +97,10 @@ function sendHTMLEmail($toEmail, $toName, $verificationLink, $myTemplate) {
     try {
         // SMTP Configuration
         $mail->isSMTP();
-        $mail->Host = $config['mail']['host']; // SMTP server (e.g., hirepurchase.ng)
+        $mail->Host = "smtp.gmail.com"; // SMTP server (e.g., hirepurchase.ng)
         $mail->SMTPAuth = true;
-        $mail->Username = $config['mail']['username']; // SMTP Username
-        $mail->Password = $config['mail']['password']; // SMTP Password
+        $mail->Username = "support@trendsaf.co"; // SMTP Username
+        $mail->Password = "emptgxmfcarsxrsy"; // SMTP Password
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Encryption
         $mail->Port = 587; // SMTP Port (Gmail: 587, Outlook: 587, SSL: 465)
 
@@ -132,7 +132,7 @@ function sendHTMLEmail($toEmail, $toName, $verificationLink, $myTemplate) {
     }
 }
 
-function investmentEmail($toEmail, $toName, $invoice_number, $product_name, $investment_amount, $expected_returns, $start_date, $one_year_later, $payment_ref, $myTemplate) {
+/*function investmentEmail($toEmail, $toName, $invoice_number, $product_name, $investment_amount, $expected_returns, $start_date, $one_year_later, $payment_ref, $myTemplate) {
     require __DIR__ . '/PHPMailer/src/PHPMailer.php';
     require __DIR__ . '/PHPMailer/src/SMTP.php';
     require __DIR__ . '/PHPMailer/src/Exception.php';
@@ -266,5 +266,5 @@ function resetPasswordEmail($toEmail, $myTemplate) {
     } catch (Exception $e) {
         return "Error: {$mail->ErrorInfo}";
     }
-}
+}*/
 
