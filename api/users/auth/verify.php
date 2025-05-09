@@ -1,2 +1,3 @@
 <?php
-    echo $verify_token;
+    respond(["token" => $verify_token], 200);
+    exit;

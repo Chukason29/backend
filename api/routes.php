@@ -42,6 +42,7 @@ try {
             respond(['error' => 'Token is required'], 400);
         }
         require_once __DIR__ . '/users/auth/verify.php';
+        exit;
     }
 
     // Fallback
