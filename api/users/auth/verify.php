@@ -13,7 +13,7 @@
 
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        if (!$result["is_used"] === TRUE) {
+        if ($result["is_used"] === TRUE) {
             respond(["status" => "error", 'message' => 'link already used'], 400);
             exit;
         }
