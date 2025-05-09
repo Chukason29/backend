@@ -2,7 +2,7 @@
 
     #TODO ==> check if the token is valid and not expired
    
-    $sql = "SELECT * FROM link_token WHERE token = :token AND is_used = :is_used AND created_at < NOW() - INTERVAL '48 hours'";
+    $sql = "SELECT * FROM link_token WHERE token = :token AND is_used = :is_used AND created_at > NOW() - INTERVAL '48 hours'";
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(':token', $verify_token, PDO::PARAM_STR);
     $stmt->bindValue(':is_used', false, PDO::PARAM_BOOL); // ✅ This is correct
