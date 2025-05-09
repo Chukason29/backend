@@ -65,37 +65,36 @@ function generateTimedToken($email, $expiryTimeInSeconds) {
     return $encodedData . '.' . $encodedSignature;
 }
 
-
-
 function getEmailFromToken($token) {
     global $config;
 
     $secretKey = $config['secret']['SECRET_KEY'];
 
-    // Split the token into data and signature parts
+    // Split the token into two parts: data and signature
     $parts = explode('.', $token);
-    if (count($parts) !== 2) return false; // Invalid token structure
+    if (count($parts) !== 2) return "Invalid token structure"; // Invalid token format
 
     list($encodedData, $encodedSignature) = $parts;
 
-    // Decode both parts
+    // Decode the data and the signature
     $data = base64_decode($encodedData);
     $providedSignature = base64_decode($encodedSignature);
 
-    // Validate signature
-    $expectedSignature = hash_hmac('sha512', $data, $secretKey, true);
-    if (!hash_equals($expectedSignature, $providedSignature)) return false; // Signature doesn't match
+    if (!$data || !$providedSignature) return "Base64 decode error"; // Failed to decode parts
 
-    // Decode the data (contains the email and expiration time)
+    // Validate the signature (HMAC SHA-512)
+    $expectedSignature = hash_hmac('sha512', $data, $secretKey, true);
+    if (!hash_equals($expectedSignature, $providedSignature)) return "Signature mismatch"; // Invalid signature
+
+    // Decode the JSON payload
     $payload = json_decode($data, true);
-    if (!is_array($payload) || !isset($payload['email'], $payload['expires_at'])) return false; // Invalid token format
+    if (!is_array($payload) || !isset($payload['email'], $payload['expires_at'])) return "Invalid payload"; // Payload is invalid
 
     // Check if the token has expired
-    if (time() > $payload['expires_at']) return false; // Token expired
+    if (time() > $payload['expires_at']) return "Token expired"; // Token has expired
 
-    return $payload['email']; // Return the email if everything is valid
+    return $payload['email']; // Return the email if valid
 }
-
 
 
 
