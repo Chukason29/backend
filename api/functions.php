@@ -80,9 +80,7 @@ function getEmailFromToken($token) {
     $data = base64_decode($encodedData);
     $providedSignature = base64_decode($encodedSignature);
 
-    // Debugging: Output decoded data and provided signature
-    echo "Decoded Data: " . $data . "\n"; // Log decoded data
-    echo "Provided Signature: " . bin2hex($providedSignature) . "\n"; // Log provided signature
+  
 
     if (!$data || !$providedSignature) return "Base64 decode error"; // Failed to decode parts
 
