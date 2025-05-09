@@ -38,9 +38,3 @@
         respond(["status" => "error", 'message' => 'Error: ' . $e->getMessage()], 500);
     }
     
-        
-    #TODO ==> If the token is valid and not expired, update the token table with true as the check column
-
-    #TODO ==> If the token is valid and not expired, update the user table with true as the check column
-    respond(["token" => $verify_token], 200);
-    exit;
