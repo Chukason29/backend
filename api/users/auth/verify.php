@@ -17,7 +17,7 @@
 
         // Update is_active in users table
         $updateUser = $pdo->prepare("UPDATE users SET is_active = :is_active WHERE email = :email");
-        $updateToken->bindValue(':is_active', TRUE, PDO::PARAM_BOOL);
+        $updateUser->bindValue(':is_active', TRUE, PDO::PARAM_BOOL);
         $updateUser->bindValue(':email', $email, PDO::PARAM_STR);
         $updateUser->execute();
         //
