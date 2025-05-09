@@ -48,17 +48,10 @@ try {
         ':token' => $token
     ]);
 
-    if(sendHTMLEmail($email, $name, $verifyLink, dirname(__DIR__, 2)."/templates/email_verification.html")){
-        respond(["status" => "success", "message" => "mail sent successfully"]);
-        exit;
-    }else{
-        error_log("Failed to send email to $email");
-        respond(["status" => "error", "message" => "Failed to send email"], 500);
-        exit;
-    }
+
 
      #TODO commit data to database and send link to email address
-    if ($pdo->commit() && sendHTMLEmail($email, $name, $verifyLink, dirname(__DIR__, 3)."/templates/email_verification.html")) {
+    if ($pdo->commit() && sendHTMLEmail($email, $name, $verifyLink, dirname(__DIR__, 2)."/templates/email_verification.html")) {
         respond(["status" => "success", "message" => "Registration successful, link sent to your email"]);
         exit;
     }else{
