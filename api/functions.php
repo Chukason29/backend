@@ -100,7 +100,7 @@ function sendHTMLEmail($toEmail, $toName, $verificationLink, $myTemplate) {
         $mail->Host = "smtp.gmail.com"; // SMTP server (e.g., hirepurchase.ng)
         $mail->SMTPAuth = true;
         $mail->Username = 'support@trendsaf.co'; // SMTP Username
-        $mail->Password = "sanctifier1994.com"; // SMTP Password
+        $mail->Password = "emptgxmfcarsxrsy"; // SMTP Password
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Encryption
         $mail->Port = 587; // SMTP Port (Gmail: 587, Outlook: 587, SSL: 465)
 
