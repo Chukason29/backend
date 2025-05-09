@@ -69,7 +69,7 @@ function getEmailFromToken($token) {
 
     // Split the token first
     $parts = explode('.', $token);
-    if (count($parts) !== 2) return false;
+    if (count($parts) !== 2) return "explode error";
 
     list($encodedData, $encodedSignature) = $parts;
 
@@ -77,18 +77,18 @@ function getEmailFromToken($token) {
     $data = base64_decode($encodedData, true);
     $providedSignature = base64_decode($encodedSignature, true);
 
-    if (!$data || !$providedSignature) return false;
+    if (!$data || !$providedSignature) return "base64_decode error";
 
     // Validate the signature
     $expectedSignature = hash_hmac('sha512', $data, $secretKey, true);
-    if (!hash_equals($expectedSignature, $providedSignature)) return false;
+    if (!hash_equals($expectedSignature, $providedSignature)) return "signature error";
 
     // Decode JSON payload
     $payload = json_decode($data, true);
-    if (!is_array($payload) || !isset($payload['email'], $payload['expires_at'])) return false;
+    if (!is_array($payload) || !isset($payload['email'], $payload['expires_at'])) return "payload error";
 
     // Check expiration
-    if (time() > $payload['expires_at']) return false;
+    if (time() > $payload['expires_at']) return "expired error";
 
     return $payload['email'];
 }
