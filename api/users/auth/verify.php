@@ -1,2 +1,2 @@
 <?php
-    echo "VERIFIED";
+    echo $verify_token;
