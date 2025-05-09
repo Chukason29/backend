@@ -98,7 +98,7 @@ function getEmailFromToken($token) {
     if (!is_array($payload) || !isset($payload['email'], $payload['expires_at'])) return "Invalid payload"; // Payload is invalid
 
     // Check if the token has expired
-    if (time() > $payload['expires_at']) return "Token expired"; // Token has expired
+    if (time() > $payload['expires_at']) return; // Token has expired
 
     return $payload['email']; // Return the email if valid
 }
