@@ -13,7 +13,7 @@
         exit;
     }else{
         $tokenData = $stmt->fetch(PDO::FETCH_ASSOC);
-        respond([$tokenData], 200);
+        respond([$tokenData], 200); exit;
     }
     respond(["status" => "success","token" => $tokenData], 200);
     #TODO ==> check if the token is already used or not
