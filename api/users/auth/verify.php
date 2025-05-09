@@ -9,24 +9,25 @@
     }
 
     try {
+        $pdo->beginTransaction();
         $updateToken = $pdo->prepare("UPDATE link_token SET is_used = :is_used WHERE email = :email");
-    $updateToken->bindValue(':is_used', TRUE, PDO::PARAM_BOOL);
-    $stmt->bindValue(':email', $email, PDO::PARAM_STR);
-    $updateToken->execute();
+        $updateToken->bindValue(':is_used', TRUE, PDO::PARAM_BOOL);
+        $stmt->bindValue(':email', $email, PDO::PARAM_STR);
+        $updateToken->execute();
 
-    // Update is_active in users table
-    $updateUser = $pdo->prepare("UPDATE users SET is_active = :is_active WHERE email = :email");
-    $updateToken->bindValue(':is_active', TRUE, PDO::PARAM_BOOL);
-    $updateUser->bindValue(':email', $email, PDO::PARAM_STR);
-    $updateUser->execute();
-    //
-    
-// Commit transaction
-    if ($pdo->commit()) {
-        header("Location:". $config['url']['BASE_URL']."/verification-success.html");
-    }else{
-        header("Location:". $config['url']['BASE_URL']."/verification-failed.html");
-    }
+        // Update is_active in users table
+        $updateUser = $pdo->prepare("UPDATE users SET is_active = :is_active WHERE email = :email");
+        $updateToken->bindValue(':is_active', TRUE, PDO::PARAM_BOOL);
+        $updateUser->bindValue(':email', $email, PDO::PARAM_STR);
+        $updateUser->execute();
+        //
+        
+    // Commit transaction
+        if ($pdo->commit()) {
+            header("Location:". $config['url']['BASE_URL']."/verification-success.html");
+        }else{
+            header("Location:". $config['url']['BASE_URL']."/verification-failed.html");
+        }
     } catch (PDOException $e) {
         $pdo->rollBack();
         respond(["status" => "error", 'message' => 'Database error: ' . $e->getMessage()], 500);
