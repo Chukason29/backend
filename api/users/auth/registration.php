@@ -25,17 +25,17 @@ $email = strtolower(sanitizeInput($data["email"]));
 
 $hashedPassword = password_hash($data['password'], PASSWORD_BCRYPT);
 
-/*if (emailExists($pdo, $email)) {
+if (emailExists($pdo, $email)) {
     respond(["status" => "false", 'message' => 'Account already exists'], 400);
-}*/
+}
 $token = generateTimedToken($email, 86400); //expires in 24hours after creation
 $verifyLink = $config['url']['BASE_URL'].'/api/users/auth/verify?token='.$token;
-if (sendHTMLEmail($email, $name, $verifyLink, dirname(__DIR__, 2)."/templates/email_verification.html")) {
+/*if (sendHTMLEmail($email, $name, $verifyLink, dirname(__DIR__, 2)."/templates/email_verification.html")) {
         respond(["status" => "success", "message" => "Registration successful, link sent to your email"], 200);
         exit;
 }else{
     respond(["status" => "error", "message" => "Registration is unsuccessful"], 200);   
-} exit;
+} exit;*/
 #TODO ==> Create a timed token based on the user's email and attach to the base url
 
 

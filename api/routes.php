@@ -36,6 +36,9 @@ try {
     if ($method === 'POST' && $uri === '/api/register') {
         require_once __DIR__ . '/users/auth/registration.php';
     }
+    if ($method === 'POST' && $uri === '/api/veri') {
+        require_once __DIR__ . '/users/auth/registration.php';
+    }
 
     // Fallback
     respond(['error' => 'Route not found'], 404);
