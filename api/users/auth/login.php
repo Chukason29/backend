@@ -10,12 +10,13 @@
         echo json_encode($data);
         exit;
     }
-    #TODO make sure email and password is inputted
+    #TODO ==> Make sure email and password is inputted
     if (!isset($data['email'], $data['password'])) {
         respond(["status" => "false",'message' => 'All fields are required'], 400);
         exit;
     }
-    #TODO
+
+    #TODO ==> Check if account exists
     if (!emailExists($pdo, $email)) {
         respond(["status" => "false", 'message' => 'Account does not exists'], 400);
         exit;
