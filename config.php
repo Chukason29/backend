@@ -107,14 +107,14 @@ return [
     // MAIL
     //
     'mail' => [
-        'host'       => $_ENV['MAIL_HOST']       ?? 'smtp.gmail.com',
+        'host'       => $_ENV['MAIL_HOST']       ?? null,
         'port'       => (int)($_ENV['MAIL_PORT']) ?? 587,
         'username'   => $_ENV['MAIL_USERNAME']   ?? null,
         'password'   => $_ENV['MAIL_PASSWORD']   ?? null,
         'encryption' => $_ENV['MAIL_ENCRYPTION'] ?? 'tls',
         'from' => [
-            'address' => $_ENV['MAIL_FROM_ADDRESS'] ?? 'noreply@example.com',
-            'name'    => $_ENV['MAIL_FROM_NAME']    ?? 'Example App',
+            'address' => $_ENV['MAIL_FROM_ADDRESS'] ?? null,
+            'name'    => $_ENV['MAIL_FROM_NAME']    ?? 'Trendsaf BaseFood',
         ],
     ],
     'url' => [
