@@ -17,7 +17,7 @@
     }
 
     $email = sanitizeInput($data['email']);
-    $password = sanitizeInput($data['password']);
+    $password = $data['password'];
 
 
     #TODO ==> Check if account exists
