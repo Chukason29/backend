@@ -74,10 +74,11 @@ function getEmailFromToken($token) {
     list($encodedData, $encodedSignature) = $parts;
 
     // Decode both parts separately
-    $data = base64_decode($encodedData, true);
-    $providedSignature = base64_decode($encodedSignature, true);
+    $data = base64_decode($encodedData); // Removed true flag
+    $providedSignature = base64_decode($encodedSignature); // Removed true flag
 
-    if (!$data || !$providedSignature) return "base64_decode error";
+    // Check if decoding failed
+    if (!$data || !$providedSignature) return "base64_decode error: " . var_export($token, true);
 
     // Validate the signature
     $expectedSignature = hash_hmac('sha512', $data, $secretKey, true);
@@ -92,6 +93,7 @@ function getEmailFromToken($token) {
 
     return $payload['email'];
 }
+
 
 
 function emailVerifyMessage($imageLink, $message){
