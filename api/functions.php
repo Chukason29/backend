@@ -42,12 +42,12 @@ function generateUUID($figure) {
     return bin2hex(random_bytes($figure)); // 32-character unique ID
 }
 
-function generateTimedToken($user_id, $expiryTimeInSeconds) {
+function generateTimedToken($email, $expiryTimeInSeconds) {
     $secretKey = $config['secret']['SECRET_KEY']; // Store securely in env/config
     $expiresAt = time() + ($expiryTimeInSeconds); // Expiration timestamp
 
     $data = json_encode([
-        "user_id" => $user_id,
+        "email" => $email,
         "expires_at" => $expiresAt
     ]);
 
@@ -56,7 +56,7 @@ function generateTimedToken($user_id, $expiryTimeInSeconds) {
     return base64_encode($data . '.' . base64_encode($signature)); // Final token
 }
 function validateTimedToken($token) {
-    $secretKey = HIRE_SECRET_KEY; // Same key used in generation
+    $secretKey = $config['secret']['SECRET_KEY']; // Same key used in generation
 
     $decoded = base64_decode($token);
     if (!$decoded) return false;
@@ -77,7 +77,7 @@ function validateTimedToken($token) {
         return false; // Token expired
     }
 
-    return $payload['user_id']; // Return valid user ID
+    return $payload['email']; // Return valid user ID
 }
 function emailVerifyMessage($imageLink, $message){
     return [
