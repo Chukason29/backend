@@ -7,6 +7,7 @@
     $stmt->bindValue(':token', $verify_token, PDO::PARAM_STR);
     $stmt->bindValue(':is_used', false, PDO::PARAM_BOOL); // ✅ This is correct
     $stmt->execute();
+    $tokenData = $stmt->fetch(PDO::FETCH_ASSOC);
     
     if (!$tokenData) {
         respond(["status" => "false", "message"=> "Invalid or expired token"], 400);
@@ -15,7 +16,7 @@
         $tokenData = $stmt->fetch(PDO::FETCH_ASSOC);
         respond([$tokenData], 200); exit;
     }
-    respond(["status" => "success","token" => $tokenData], 200);
+    respond(["status" => "success","data" => $tokenData], 200);
     #TODO ==> check if the token is already used or not
 
     #TODO ==> If the token is valid and not expired, update the token table with true as the check column
