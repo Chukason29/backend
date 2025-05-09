@@ -43,18 +43,25 @@ function generateUUID($figure) {
 }
 
 function generateTimedToken($email, $expiryTimeInSeconds) {
-    $secretKey = $config['secret']['SECRET_KEY']; // Store securely in env/config
-    $expiresAt = time() + ($expiryTimeInSeconds); // Expiration timestamp
+    global $config;
+
+    $secretKey = $config['secret']['SECRET_KEY'];
+    $expiresAt = time() + $expiryTimeInSeconds;
 
     $data = json_encode([
         "email" => $email,
         "expires_at" => $expiresAt
     ]);
 
-    // Generate a stronger signature using HMAC-SHA512
     $signature = hash_hmac('sha512', $data, $secretKey, true);
-    return base64_encode($data . '.' . base64_encode($signature)); // Final token
+
+    // Encode both parts separately and join with a dot
+    $encodedData = base64_encode($data);
+    $encodedSignature = base64_encode($signature);
+
+    return $encodedData . '.' . $encodedSignature;
 }
+
 function getEmailFromToken($token) {
     global $config; // Assuming you use $config for the secret key
 
