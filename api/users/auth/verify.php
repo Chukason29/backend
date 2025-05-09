@@ -7,6 +7,26 @@
         respond(["status" => "error", 'message' => 'Invalid link or link expired'], 400);
         exit;
     }
+    try {
+        $stmt = $pdo->prepare("SELECT * FROM link_token WHERE email = :email");
+        $stmt->bindValue(':email', $email, PDO::PARAM_STR);
+
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$result["is_used"] === TRUE) {
+            respond(["status" => "error", 'message' => 'link already used'], 400);
+            exit;
+        }
+    } catch (PDOException $e) {
+        respond(["status" => "error", 'message' => 'Database error: ' . $e->getMessage()], 500);
+        exit;
+    } catch (Exception $e) {
+        respond(["status" => "error", 'message' => 'Error: ' . $e->getMessage()], 500);
+        exit;
+    } catch (\Throwable $th) {
+        respond(["status" => "error", 'message' => 'Error: ' . $th->getMessage()], 500);
+        exit;
+    }
 
     try {
         $pdo->beginTransaction();
