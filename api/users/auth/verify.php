@@ -1,10 +1,12 @@
 <?php
 
     #TODO ==> check if the token is valid and not expired
-    $is_used = false;
+   
     $sql = "SELECT * FROM link_token WHERE token = :token AND is_used = :is_used AND created_at < NOW() - INTERVAL '48 hours'";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute([':token' => $verify_token, ':is_used' => $is_used]);
+    $stmt->bindValue(':token', $verify_token, PDO::PARAM_STR);
+    $stmt->bindValue(':is_used', true, PDO::PARAM_BOOL); // ✅ This is correct
+    $stmt->execute();
     $tokenData = $stmt->fetch(PDO::FETCH_ASSOC);
     if (!$tokenData) {
         respond(["error" => "Invalid or expired token"], 400);
