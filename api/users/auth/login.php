@@ -16,7 +16,7 @@
         exit;
     }
 
-    $email = sanitizeInput($data['email']);
+    /*$email = sanitizeInput($data['email']);
     $password = $data['password'];
 
 
@@ -31,4 +31,4 @@
     if (password_verify($password, $user['password_hash'])) {
         // Return session or token info
         return "Login successful";
-    }
+    }*/
