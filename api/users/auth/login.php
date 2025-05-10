@@ -72,7 +72,8 @@
     }
 
     if ($organization_id == null){ 
-        header("Location: " . rtrim($config['url']['BASE_URL'], '/') . "/create-organization");
+        respond(["status" => "false", 'message' => 'organization not set'], 400);
+       // header("Location: " . rtrim($config['url']['BASE_URL'], '/') . "/create-organization");
         exit;
     }
 
