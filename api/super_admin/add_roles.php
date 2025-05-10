@@ -20,7 +20,7 @@ try {
     $pdo->beginTransaction();
     $stmt1 = $pdo->prepare("INSERT INTO roles ( id, role_name ) VALUES (:id, :role_name)");
     $stmt1->execute([
-        ':role_name' => $name,
+        ':role_name' => $data['role_name'],
         ':id' => $uuid
     ]);
 
