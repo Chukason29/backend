@@ -16,7 +16,7 @@
         exit;
     }
 
-    /*$email = sanitizeInput($data['email']);
+    $email = sanitizeInput($data['email']);
     $password = $data['password'];
 
 
@@ -26,9 +26,47 @@
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if (!$user || !$user['is_active']) return "Account not active or doesn't exist";
+    #TODO ==> Check if account exists
+    if (!$user){
+        respond(["status" => "false", 'message' => 'Account not found'], 400);
+        exit;
+    }
+    #TODO ==> Check if account is activated
+    if (!$user['is_active']){ 
+        $token = generateTimedToken($email, 172800); //expires in 48hours after creation
+        $verifyLink = $config['url']['BASE_URL'].'/api/verify?token='.$token;
+        
+        try {
+            $pdo->beginTransaction();
+            $updateToken = $pdo->prepare("DELETE FROM link_token  WHERE email = :email");
+            $updateToken->bindValue(':email', $email, PDO::PARAM_STR);
+            $updateToken->execute();
+
+            // Update is_active in users table
+            $updateUser = $pdo->prepare("INSERT INTO link_token (email, token) VALUES (:email, :token)");
+            $updateUser->bindValue(':token', $token, PDO::PARAM_STR);
+            $updateUser->bindValue(':email', $email, PDO::PARAM_STR);
+            $updateUser->execute();
+        //
+        
+    // Commit transaction
+        if ($pdo->commit()) {
+            respond(["status" => "false", 'message' => 'Account not activated'], 400);
+            exit;
+        }
+    } catch (PDOException $e) {
+        $pdo->rollBack();
+        respond(["status" => "error", 'message' => 'Database error: ' . $e->getMessage()], 500);
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        respond(["status" => "error", 'message' => 'Error: ' . $e->getMessage()], 500);
+    } catch (\Throwable $th) {
+        $pdo->rollBack();
+        respond(["status" => "error", 'message' => 'Error: ' . $e->getMessage()], 500);
+    }
+    }
 
     if (password_verify($password, $user['password_hash'])) {
         // Return session or token info
         return "Login successful";
-    }*/
+    }
