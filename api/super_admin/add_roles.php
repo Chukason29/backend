@@ -13,14 +13,14 @@ function respond($data, $code = 200) {
 }
 $uuid = Uuid::uuid4()->toString();
 
-if (!isset($data['name'])) {
+if (!isset($data['role_name'])) {
     respond(["status" => "false",'message' => 'All fields are required'], 400);
 }
 try {
     $pdo->beginTransaction();
-    $stmt1 = $pdo->prepare("INSERT INTO roles ( id, name ) VALUES (:id, :name)");
+    $stmt1 = $pdo->prepare("INSERT INTO roles ( id, role_name ) VALUES (:id, :role_name)");
     $stmt1->execute([
-        ':name' => $name,
+        ':role_name' => $name,
         ':id' => $uuid
     ]);
 
