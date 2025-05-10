@@ -75,8 +75,7 @@
 
     if ($organization_id == null){ 
         $_SESSION['user_id'] = $user_id;
-        respond(["status" => "false", 'user_id' => $_SESSION['user_id']], 400);
-        //header("Location: " . rtrim($config['url']['BASE_URL'], '/') . "/create-organization");
+        header("Location: " . rtrim($config['url']['BASE_URL'], '/') . "/create-organization");
         exit;
     }
 
