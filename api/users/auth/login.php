@@ -26,16 +26,20 @@
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
+    
+
     #TODO ==> Check if account exists
     if (!$user){
         respond(["status" => "false", 'message' => 'Account not found'], 400);
         exit;
     }
+    respond(["name" => $user['name']], 400);
+    exit;
     #TODO ==> Check if account is activated
     if (!$user['is_active']){ 
         $token = generateTimedToken($email, 172800); //expires in 48hours after creation
         $verifyLink = $config['url']['BASE_URL'].'/api/verify?token='.$token;
-        
+
         try {
             $pdo->beginTransaction();
             $updateToken = $pdo->prepare("DELETE FROM link_token  WHERE email = :email");
