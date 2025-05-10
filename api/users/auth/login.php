@@ -1,4 +1,5 @@
 <?php
+    session_start();
     #TODO
     // JSON body
     $data = json_decode(file_get_contents('php://input'), true);
@@ -34,6 +35,7 @@
         exit;
     }
     $name = $user['name'];
+    $user_id = $user['id'];
     $organization_id = $user['organization_id'];
     #TODO ==> Check if account is activated
     if (!$user['is_active']){ 
@@ -72,8 +74,9 @@
     }
 
     if ($organization_id == null){ 
-        respond(["status" => "false", 'message' => 'organization not set'], 400);
-       // header("Location: " . rtrim($config['url']['BASE_URL'], '/') . "/create-organization");
+        $_SESSION['user_id'] = $user_id;
+        respond(["status" => "false", 'user_id' => $_SESSION['user_id']], 400);
+        //header("Location: " . rtrim($config['url']['BASE_URL'], '/') . "/create-organization");
         exit;
     }
 
