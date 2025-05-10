@@ -34,40 +34,46 @@
         exit;
     }
     $name = $user['name'];
+    $organization_id = $user['organization_id'];
     #TODO ==> Check if account is activated
     if (!$user['is_active']){ 
         $token = generateTimedToken($email, 172800); //expires in 48hours after creation
         $verifyLink = $config['url']['BASE_URL'].'/api/verify?token='.$token;
 
         try {
-            #TODO ==> Updating the token table for the user
-            $pdo->beginTransaction();
-            $updateToken = $pdo->prepare("DELETE FROM link_token  WHERE email = :email");
-            $updateToken->bindValue(':email', $email, PDO::PARAM_STR);
-            $updateToken->execute();
+                #TODO ==> Updating the token table for the user
+                $pdo->beginTransaction();
+                $updateToken = $pdo->prepare("DELETE FROM link_token  WHERE email = :email");
+                $updateToken->bindValue(':email', $email, PDO::PARAM_STR);
+                $updateToken->execute();
 
+                
+                $updateUser = $pdo->prepare("INSERT INTO link_token (email, token) VALUES (:email, :token)");
+                $updateUser->bindValue(':token', $token, PDO::PARAM_STR);
+                $updateUser->bindValue(':email', $email, PDO::PARAM_STR);
+                $updateUser->execute();
+            //
             
-            $updateUser = $pdo->prepare("INSERT INTO link_token (email, token) VALUES (:email, :token)");
-            $updateUser->bindValue(':token', $token, PDO::PARAM_STR);
-            $updateUser->bindValue(':email', $email, PDO::PARAM_STR);
-            $updateUser->execute();
-        //
-        
-    // Commit transaction
-        if ($pdo->commit() && sendHTMLEmail($email, $name, $verifyLink, dirname(__DIR__, 2)."/templates/email_verification.html")) {
-            respond(["status" => "false", 'message' => 'Account not activated, activation link sent to your mail'], 400);
-            exit;
+        // Commit transaction
+            if ($pdo->commit() && sendHTMLEmail($email, $name, $verifyLink, dirname(__DIR__, 2)."/templates/email_verification.html")) {
+                respond(["status" => "false", 'message' => 'Account not activated, activation link sent to your mail'], 400);
+                exit;
+            }
+        } catch (PDOException $e) {
+            $pdo->rollBack();
+            respond(["status" => "error", 'message' => 'Database error: ' . $e->getMessage()], 500);
+        } catch (Exception $e) {
+            $pdo->rollBack();
+            respond(["status" => "error", 'message' => 'Error: ' . $e->getMessage()], 500);
+        } catch (\Throwable $th) {
+            $pdo->rollBack();
+            respond(["status" => "error", 'message' => 'Error: ' . $e->getMessage()], 500);
         }
-    } catch (PDOException $e) {
-        $pdo->rollBack();
-        respond(["status" => "error", 'message' => 'Database error: ' . $e->getMessage()], 500);
-    } catch (Exception $e) {
-        $pdo->rollBack();
-        respond(["status" => "error", 'message' => 'Error: ' . $e->getMessage()], 500);
-    } catch (\Throwable $th) {
-        $pdo->rollBack();
-        respond(["status" => "error", 'message' => 'Error: ' . $e->getMessage()], 500);
     }
+
+    if ($organization_id == null){ 
+        header("Location: " . rtrim($config['url']['BASE_URL'], '/') . "/create-organization");
+        exit;
     }
 
     if (password_verify($password, $user['password_hash'])) {
