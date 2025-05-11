@@ -1,6 +1,5 @@
 <?php
 $config = require __DIR__ . '/../db.php';
-phpinfo();
 
 try {
     // SQL: Create users table if it doesn't exist
