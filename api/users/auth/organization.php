@@ -31,9 +31,44 @@
     $organization_id = Uuid::uuid4()->toString();
     $subscription_id = Uuid::uuid4()->toString();
 
+    #TODO ==> Query tiers table to get the tier id
     $stmt = $pdo->prepare("SELECT * FROM tiers WHERE tier_name = :tier_name");
     $stmt->bindValue(':tier_name', 'Free');
     $stmt->execute();
     $tier = $stmt->fetch(PDO::FETCH_ASSOC);
     $tier_id = $tier['id'];
-    respond($tier);
+
+    if (!isset($data['role_name'])) {
+    respond(["status" => "false",'message' => 'All fields are required'], 400);
+}
+    try {
+        $pdo->beginTransaction();
+        $stmt1 = $pdo->prepare(
+        "INSERT INTO organizations ( id, name, subscription_id, billing_email, billing_address) 
+        VALUES (:id, :name, :subscription_id, :billing_email, :billing_address)"
+    );
+    $stmt1->execute([
+        ':id' => $organization_id,
+        ':name' => $name,
+        ':subscription_id' => $subscription_id,
+        ':billing_email' => $billing_email,
+        ':billing_address' => $billing_address     
+    ]);
+
+     #TODO commit data to database and send link to email address
+    if ($pdo->commit() ){
+        respond(["status" => "success", "message" => "role added successfully"], 200);
+        exit;
+    }else{
+        respond(["status" => "error", "message" => "Unsuccessful"], 200);   
+    }
+
+respond(['message' => 'User registered successfully'], 201);
+} catch (PDOException $e) {
+    $pdo->rollBack();
+    respond(['error' => 'Database error: ' . $e->getMessage()], 500);
+} catch (Exception $e) {
+    $pdo->rollBack();
+    respond(['error' => 'Error: ' . $e->getMessage()], 500);
+}
+    
