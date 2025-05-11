@@ -8,7 +8,7 @@ try {
         tier_id UUID NOT NULL PRIMARY KEY,     
         tier_name VARCHAR(20) NOT NULL UNIQUE,  
         price DECIMAL(10, 2) NOT NULL,        
-        max_users INT  NOT NULL
+        max_users INT  NOT NULL,
         tier_description TEXT
     );
     SQL;
