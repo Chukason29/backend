@@ -46,17 +46,17 @@ $stmt->execute([$config['roles']['ORGANIZATION_ADMIN']]);
 $role = $stmt->$roles = $stmt->fetch(PDO::FETCH_ASSOC);
 
 $role_id = $role['id'];
-respond(["status" => "error", 'message' => $role_id], 400);exit;
+
 
 
 try {
     $pdo->beginTransaction();
-    $stmt1 = $pdo->prepare("INSERT INTO users ( name, email, password_hash) VALUES (:name, :email, :hashed_password)");
+    $stmt1 = $pdo->prepare("INSERT INTO users ( name, email, password_hash, role_id) VALUES (:name, :email, :hashed_password, :role_id)");
     $stmt1->execute([
         ':name' => $name,
         ':email' => $email,
         ':hashed_password' => $hashedPassword, // Always hash passwords
-        
+        ':role_id' => $role_id
     ]);
 
     #TODO ==> input the token to the token table with false as the check column
