@@ -39,22 +39,38 @@
     $tier_id = $tier['id'];
 
     if (!isset($data['role_name'])) {
-    respond(["status" => "false",'message' => 'All fields are required'], 400);
-}
+        respond(["status" => "false",'message' => 'All fields are required'], 400);
+    }
+
     try {
         $pdo->beginTransaction();
+        #INSERT INTO ORGANIZATION TABLE
         $stmt1 = $pdo->prepare(
         "INSERT INTO organizations ( id, name, subscription_id, billing_email, billing_address) 
         VALUES (:id, :name, :subscription_id, :billing_email, :billing_address)"
     );
-    $stmt1->execute([
+        $stmt1->execute([
         ':id' => $organization_id,
         ':name' => $name,
         ':subscription_id' => $subscription_id,
         ':billing_email' => $billing_email,
         ':billing_address' => $billing_address     
     ]);
+    $sql = "UPDATE users SET organization_id = :organization_id WHERE id = :user_id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(':orgs', $organization_id); // Ensure $orgsArray is a PostgreSQL array string like '{uuid1,uuid2}'
+    $stmt->bindValue(':user_id', $user_id);
+    $stmt->execute();
 
+    $subStmt = $pdo->prepare("INSERT INTO subscriptions (
+        id, organization_id, tier_id, renewal_date, payment_status,
+        price
+    ) VALUES ( :id, :organization_id, :tier_id, NULL, 'active', 0");
+    $subStmt->execute([
+        ':id' => $subscription_id,
+        ':organization_id' => $organization_id,
+        ':tier_id' => $tier_id,
+    ]);
      #TODO commit data to database and send link to email address
     if ($pdo->commit() ){
         respond(["status" => "success", "message" => "role added successfully"], 200);
