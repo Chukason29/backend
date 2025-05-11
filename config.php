@@ -120,4 +120,7 @@ return [
     'url' => [
         'BASE_URL' => $_ENV['BASE_URL'] ?? 'https://warehouse.trendsaf.co',
     ],
+    'roles' => [
+        'ORGANIZATION_ADMIN' => $_ENV['ORGANIZATION_ADMIN'] ?? null,
+    ],
 ];
