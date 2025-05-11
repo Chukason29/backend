@@ -17,14 +17,14 @@
         respond(["status" => "error", 'message' => "unauthorized access"], 400);
         exit;
     }
-    if (!isset($data['name'], $data['billing_email'], $data['billing_address'], $data['phone_number'], $data['website'])) {
+    if (!isset($data['name'], $data['billing_email'], $data['billing_address'], $data['phone'], $data['website'])) {
         respond(["status" => "false",'message' => 'All fields are required'], 400);
         exit;
     }
     $name = strtolower(sanitizeInput($data["name"]));
     $billing_email = strtolower(sanitizeInput($data["billing_email"]));
     $billing_address = strtolower(sanitizeInput($data["billing_address"]));
-    $phone_number = strtolower(sanitizeInput($data["phone_number"]));
+    $phone_number = strtolower(sanitizeInput($data["phone"]));
     $website = strtolower(sanitizeInput($data["website"]));
     $user_id = $_SESSION['user_id'];
 
