@@ -32,7 +32,7 @@
     $subscription_id = Uuid::uuid4()->toString();
 
     $stmt = $pdo->prepare("SELECT * FROM tiers WHERE tier_name = :tier_name");
-    $stmt->bindValue(':tier_name', 'free');
+    $stmt->bindValue(':tier_name', 'Free');
     $stmt->execute();
     $tier = $stmt->fetch(PDO::FETCH_ASSOC);
     $tier_id = $tier['id'];
