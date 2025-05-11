@@ -49,6 +49,10 @@ try {
         require_once __DIR__ . '/super_admin/add_tiers.php';
         exit;
     }
+    if ($method === 'POST' && $uri === '/api/organization') {
+        require_once __DIR__ . '/users/auth/organization.php';
+        exit;
+    }
 
     // Fallback
     respond(['error' => 'Route not found'], 404);
