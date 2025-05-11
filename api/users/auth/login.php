@@ -13,7 +13,7 @@
     }
     #TODO ==> Make sure email and password is inputted
     if (!isset($data['email'], $data['password'])) {
-        respond(["status" => "false",'message' => 'All fields are required'], 400);
+        respond(["status" => "error",'message' => 'All fields are required'], 400);
         exit;
     }
 
@@ -31,7 +31,7 @@
 
     #TODO ==> Check if account exists
     if (!$user){
-        respond(["status" => "false", 'message' => 'Account not found'], 400);
+        respond(["status" => "error", 'message' => 'Account not found'], 400);
         exit;
     }
     $name = $user['name'];
@@ -58,7 +58,7 @@
             
         // Commit transaction
             if ($pdo->commit() && sendHTMLEmail($email, $name, $verifyLink, dirname(__DIR__, 2)."/templates/email_verification.html")) {
-                respond(["status" => "false", 'message' => 'Account not activated, activation link sent to your mail'], 400);
+                respond(["status" => "error", 'message' => 'Account not activated, activation link sent to your mail'], 400);
                 exit;
             }
         } catch (PDOException $e) {

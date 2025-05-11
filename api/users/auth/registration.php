@@ -11,23 +11,23 @@ function respond($data, $code = 200) {
     exit;
 }
 if (!isset($data['name'], $data['email'], $data['password'])) {
-    respond(["status" => "false",'message' => 'All fields are required'], 400);
+    respond(["status" => "error",'message' => 'All fields are required'], 400);
 }
 
 #TODO check if email is valid
 if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-    respond(["status" => "false", 'message' => 'Invalid email address'], 400);
+    respond(["status" => "error", 'message' => 'Invalid email address'], 400);
 }
 if (empty($data["name"])) {
-    respond(["status" => "false", 'message' => 'Name is required'], 400);
+    respond(["status" => "error", 'message' => 'Name is required'], 400);
 }
 
 if (empty($data['password'])) {
-    respond(["status" => "false", 'message' => 'Password is required'], 400);
+    respond(["status" => "error", 'message' => 'Password is required'], 400);
 }
 
 if (strlen($data['password']) < 8) {
-    respond(["status" => "false", 'message' => 'Password must be at least 8 characters long'], 400);
+    respond(["status" => "error", 'message' => 'Password must be at least 8 characters long'], 400);
 }
 
 $name = strtolower(sanitizeInput($data["name"]));
@@ -36,7 +36,7 @@ $email = strtolower(sanitizeInput($data["email"]));
 $hashedPassword = password_hash($data['password'], PASSWORD_BCRYPT);
 
 if (emailExists($pdo, $email)) {
-    respond(["status" => "false", 'message' => 'Account already exists'], 400);
+    respond(["status" => "error", 'message' => 'Account already exists'], 400);
 }
 #TODO ==> Create a timed token based on the user's email and attach to the base url
 $token = generateTimedToken($email, 172800); //expires in 48hours after creation
