@@ -41,6 +41,10 @@ try {
         require_once __DIR__ . '/super_admin/add_roles.php';
         exit;
     }
+    if ($method === 'GET' && $uri === '/api/roles/list') {
+        require_once __DIR__ . '/super_admin/get_roles.php';
+        exit;
+    }
 
     // Fallback
     respond(['error' => 'Route not found'], 404);
