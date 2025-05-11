@@ -13,7 +13,7 @@ function respond($data, $code = 200) {
 }
 $uuid = Uuid::uuid4()->toString();
 
-if (!isset($data['tier_name'], )) {
+if (!isset($data['tier_name'], $data['tier_description'], $data['tier_price'])) {
     respond(["status" => "false",'message' => 'All fields are required'], 400);
 }
 try {

@@ -5,9 +5,11 @@ try {
     // SQL: Create users table if it doesn't exist
     $sql = <<<SQL
     CREATE TABLE IF NOT EXISTS tiers (
-        tier_id UUID NOT NULL PRIMARY KEY,     -- Must match the phone format in users table
-        tier_name VARCHAR(20) NOT NULL UNIQUE,  -- Secure token (hashed or random)
-        max_users INT  -- Track if token has been used
+        tier_id UUID NOT NULL PRIMARY KEY,     
+        tier_name VARCHAR(20) NOT NULL UNIQUE,  
+        price DECIMAL(10, 2) NOT NULL,        
+        max_users INT  NOT NULL
+        tier_description TEXT
     );
     SQL;
 
