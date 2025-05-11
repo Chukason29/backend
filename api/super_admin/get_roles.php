@@ -8,8 +8,8 @@ function respond($data, $code = 200) {
 }
 
 try {
-    $stmt1 = $pdo->prepare("SELECT * FROM roles");
-    $stmt1->execute();
+    $stmt = $pdo->prepare("SELECT * FROM roles");
+    $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
     respond($user);
 } catch (PDOException $e) {
