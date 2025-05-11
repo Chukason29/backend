@@ -10,7 +10,8 @@ function respond($data, $code = 200) {
 try {
     $stmt = $pdo->prepare("SELECT * FROM roles");
     $stmt->execute();
-    $user = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $roles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    respond($roles, 200);
 
 } catch (PDOException $e) {
     $pdo->rollBack();
