@@ -13,20 +13,22 @@ function respond($data, $code = 200) {
 }
 $uuid = Uuid::uuid4()->toString();
 
-if (!isset($data['tier_name'], $data['tier_description'], $data['tier_price'])) {
+if (!isset($data['tier_name'], $data['price'], $data['max_users'])) {
     respond(["status" => "false",'message' => 'All fields are required'], 400);
 }
 try {
     $pdo->beginTransaction();
-    $stmt1 = $pdo->prepare("INSERT INTO roles ( id, role_name ) VALUES (:id, :role_name)");
+    $stmt1 = $pdo->prepare("INSERT INTO tiers ( tier_id, tier_name, price, max_users ) VALUES (:tier_id, :tier_name, :price, :max_users)");
     $stmt1->execute([
-        ':role_name' => $data['role_name'],
-        ':id' => $uuid
+        ':tier_id' => $uuid,
+        ':tier_name' => $data['tier_name'],
+        ':price' => $data['price'],
+        ':max_users' => $data['max_users']
     ]);
 
      #TODO commit data to database and send link to email address
     if ($pdo->commit() ){
-        respond(["status" => "success", "message" => "role added successfully"], 200);
+        respond(["status" => "success", "message" => "tier added successfully"], 200);
         exit;
     }else{
         respond(["status" => "error", "message" => "Unsuccessful"], 200);   
