@@ -8,9 +8,10 @@ $jwt_secret = $config['secret']['SECRET_KEY'];
 $jwt_payload = [
     'iat' => time(), // Issued at
     'iss' => 'https://warehouse.trendsaf.co', // Issuer
-
-    'user_id' => $user_id,
-    'organization_id' => $organization_id,
+    'name' => $_SESSION['name'],
+    'role_name' => $_SESSION['role_name'],
+    'user_id' => $_SESSION['user_id'],
+    'organization_id' => $_SESSION['organization_id'],
     'email' => $_SESSION['email'],
     'exp' => time() + (60 * 60 * 48) // 48 hours
 ];
@@ -24,7 +25,6 @@ $_SESSION['jwt'] = $jwt;
 // Return response
 respond([
     'status' => 'success',
-    'message' => 'Organization created and user authenticated',
-    'token' => $jwt,
-    'session' => session_id()
+    'message' => 'Login successful',
+    'token' => $jwt
 ], 200);

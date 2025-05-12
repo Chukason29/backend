@@ -34,25 +34,17 @@
         respond(["status" => "error", 'message' => 'Account not found'], 400);
         exit;
     }
-    $name = $user['name'];
-    $user_id = $user['id'];
-    $organization_id = $user['organization_id'];
+    $_SESSION['name'] = $name = $user['name'];
+    $_SESSION['user_id'] = $user_id = $user['id'];
+    $_SESSION['email'] = $user_id = $user['email'];
+    $_SESSION['organization_id'] = $organization_id = $user['organization_id'];
     $role_id = $user['role_id'];
     $stmt = $pdo->prepare("SELECT * FROM roles WHERE id = :role_id");
     $stmt->bindValue(':role_id', $role_id);
     $stmt->execute();
     $role = $stmt->fetch(PDO::FETCH_ASSOC);
-    $role_name = $role['role_name'];
-
-    respond([
-        'status' => 'success',
-        'message' => 'Login successful',
-        'user_id' => $user_id,
-        'email' => $email,
-        'name' => $name,
-        'role_name' => $role_name,
-        'organization_id' => $organization_id
-    ], 200);
+    
+    $_SESSION['role_name'] = $role_name = $role['role_name'];
     
     #TODO ==> Check if account is activated
     if (!$user['is_active']){ 
@@ -98,5 +90,5 @@
 
     if (password_verify($password, $user['password_hash'])) {
         // Return session or token info
-        return "Login successful";
+        require_once __DIR__ . '/authenticate.php';
     }
