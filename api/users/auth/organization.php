@@ -69,13 +69,13 @@
     ]);
      #TODO commit data to database and send link to email address
     if ($pdo->commit() ){
-        respond(["status" => "success", "message" => "role added successfully"], 200);
+        
+        respond(["status" => "success", "message" => 'Organization created successfully'], 201);
         exit;
     }else{
         respond(["status" => "error", "message" => "Unsuccessful"], 200);   
     }
 
-respond(["status" => "success", "message" => 'Organization created successfully'], 201);
 } catch (PDOException $e) {
     $pdo->rollBack();
     respond(['error' => 'Database error: ' . $e->getMessage()], 500);
