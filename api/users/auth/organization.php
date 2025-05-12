@@ -75,7 +75,7 @@
         respond(["status" => "error", "message" => "Unsuccessful"], 200);   
     }
 
-respond(['message' => 'User registered successfully'], 201);
+respond(["status" => "success", "message" => 'Organization created successfully'], 201);
 } catch (PDOException $e) {
     $pdo->rollBack();
     respond(['error' => 'Database error: ' . $e->getMessage()], 500);
