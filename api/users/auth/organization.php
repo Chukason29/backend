@@ -37,6 +37,7 @@
     $stmt->execute();
     $tier = $stmt->fetch(PDO::FETCH_ASSOC);
     $tier_id = $tier['id'];
+    respond($tier_id);exit;
 
     try {
         $pdo->beginTransaction();
