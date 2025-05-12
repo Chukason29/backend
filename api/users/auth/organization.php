@@ -54,7 +54,7 @@
     ]);
     $sql = "UPDATE users SET organization_id = :organization_id WHERE id = :user_id";
     $stmt = $pdo->prepare($sql);
-    $stmt->bindValue(':orgs', $organization_id); // Ensure $orgsArray is a PostgreSQL array string like '{uuid1,uuid2}'
+    $stmt->bindValue(':organization_id', $organization_id); // Ensure $orgsArray is a PostgreSQL array string like '{uuid1,uuid2}'
     $stmt->bindValue(':user_id', $user_id);
     $stmt->execute();
 
