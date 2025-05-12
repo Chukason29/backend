@@ -38,10 +38,6 @@
     $tier = $stmt->fetch(PDO::FETCH_ASSOC);
     $tier_id = $tier['id'];
 
-    if (!isset($data['role_name'])) {
-        respond(["status" => "false",'message' => 'All fields are required'], 400);
-    }
-
     try {
         $pdo->beginTransaction();
         #INSERT INTO ORGANIZATION TABLE
