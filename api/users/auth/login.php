@@ -91,4 +91,9 @@
     if (password_verify($password, $user['password_hash'])) {
         // Return session or token info
         require_once __DIR__ . '/authenticate.php';
+        respond([
+            'status' => 'success',
+            'message' => 'Login successful',
+            'token' => $jwt
+        ], 200);
     }

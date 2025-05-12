@@ -23,8 +23,4 @@ $jwt = JWT::encode($jwt_payload, $jwt_secret, 'HS256');
 $_SESSION['jwt'] = $jwt;
 
 // Return response
-respond([
-    'status' => 'success',
-    'message' => 'Login successful',
-    'token' => $jwt
-], 200);
+
