@@ -36,7 +36,7 @@
     }
     $_SESSION['name'] = $name = $user['name'];
     $_SESSION['user_id'] = $user_id = $user['id'];
-    $_SESSION['email'] = $user_id = $user['email'];
+    $_SESSION['email'] = $email = $user['email'];
     $_SESSION['organization_id'] = $organization_id = $user['organization_id'];
     $role_id = $user['role_id'];
     $stmt = $pdo->prepare("SELECT * FROM roles WHERE id = :role_id");
