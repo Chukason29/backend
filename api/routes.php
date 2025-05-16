@@ -25,6 +25,9 @@ try {
     if ($method === 'POST' && $uri === '/api/register') {
         require_once __DIR__ . '/users/auth/registration.php';
     }
+    if ($method === 'POST' && $uri === '/api/test') {
+        require_once __DIR__ . '/users/auth/test.php';
+    }
     if ($method === 'GET' && $uri === '/api/verify') {
         $verify_token = $_GET['token'] ?? null;
         if (empty($verify_token)) {

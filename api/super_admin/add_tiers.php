@@ -18,7 +18,7 @@ if (!isset($data['tier_name'], $data['price'], $data['max_users'])) {
 }
 try {
     $pdo->beginTransaction();
-    $stmt1 = $pdo->prepare("INSERT INTO tiers ( tier_id, tier_name, price, max_users ) VALUES (:tier_id, :tier_name, :price, :max_users)");
+    $stmt1 = $pdo->prepare("INSERT INTO tiers ( id, tier_name, price, max_users ) VALUES (:tier_id, :tier_name, :price, :max_users)");
     $stmt1->execute([
         ':tier_id' => $uuid,
         ':tier_name' => $data['tier_name'],

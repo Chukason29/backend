@@ -31,7 +31,7 @@
     $organization_id = Uuid::uuid4()->toString();
     $subscription_id = Uuid::uuid4()->toString();
 
-    $tier_name = 'Free';
+    $tier_name = 'free';
     #TODO ==> Query tiers table to get the tier id
     $stmt = $pdo->prepare("SELECT * FROM tiers WHERE tier_name = :tier_name");
     $stmt->bindValue(':tier_name', $tier_name);
@@ -43,15 +43,17 @@
         $pdo->beginTransaction();
         #INSERT INTO ORGANIZATION TABLE
         $stmt1 = $pdo->prepare(
-        "INSERT INTO organizations ( id, name, subscription_id, billing_email, billing_address) 
-        VALUES (:id, :name, :subscription_id, :billing_email, :billing_address)"
+        "INSERT INTO organizations ( id, name, subscription_id, billing_email, billing_address, phone, website) 
+        VALUES (:id, :name, :subscription_id, :billing_email, :billing_address, :phone, :website)"
     );
         $stmt1->execute([
         ':id' => $organization_id,
         ':name' => $name,
         ':subscription_id' => $subscription_id,
         ':billing_email' => $billing_email,
-        ':billing_address' => $billing_address     
+        ':billing_address' => $billing_address,
+        ':phone' => $phone_number,
+        ':website' => $website     
     ]);
     $sql = "UPDATE users SET organization_id = :organization_id WHERE id = :user_id";
     $stmt = $pdo->prepare($sql);
