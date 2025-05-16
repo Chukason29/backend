@@ -1,6 +1,36 @@
 <?php
 $config = require __DIR__ . '/../db.php';
 
+
+try {
+    // TIERS table
+    $tableSql = <<<SQL
+    CREATE TABLE IF NOT EXISTS tiers (
+        id UUID PRIMARY KEY,
+        tier_name TEXT NOT NULL UNIQUE,
+        max_users INT
+    );
+    SQL;
+    $pdo->exec($tableSql);
+} catch (PDOException $e) {
+    echo "❌ Tiers table error: " . $e->getMessage();
+    exit;
+}
+
+try {
+    // ROLES table
+    $tableSql = <<<SQL
+    CREATE TABLE IF NOT EXISTS roles (
+        id UUID PRIMARY KEY,
+        role_name TEXT NOT NULL UNIQUE
+    );
+    SQL;
+    $pdo->exec($tableSql);
+} catch (PDOException $e) {
+    echo "❌ Roles table error: " . $e->getMessage();
+    exit;
+}
+
 try {
     // ORGANIZATIONS table
     $tableSql = <<<SQL
@@ -68,22 +98,6 @@ try {
     exit;
 }
 
-
-
-try {
-    // ROLES table
-    $tableSql = <<<SQL
-    CREATE TABLE IF NOT EXISTS roles (
-        id UUID PRIMARY KEY,
-        role_name TEXT NOT NULL UNIQUE
-    );
-    SQL;
-    $pdo->exec($tableSql);
-} catch (PDOException $e) {
-    echo "❌ Roles table error: " . $e->getMessage();
-    exit;
-}
-
 try {
     // Define ENUM type only once
     $pdo->exec("DO \$\$ BEGIN
@@ -121,17 +135,3 @@ try {
     exit;
 }
 
-try {
-    // TIERS table
-    $tableSql = <<<SQL
-    CREATE TABLE IF NOT EXISTS tiers (
-        id UUID PRIMARY KEY,
-        tier_name TEXT NOT NULL UNIQUE,
-        max_users INT
-    );
-    SQL;
-    $pdo->exec($tableSql);
-} catch (PDOException $e) {
-    echo "❌ Tiers table error: " . $e->getMessage();
-    exit;
-}
