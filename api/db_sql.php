@@ -2,6 +2,29 @@
 $config = require __DIR__ . '/../db.php';
 
 try {
+    // ORGANIZATIONS table
+    $tableSql = <<<SQL
+    CREATE TABLE IF NOT EXISTS organizations (
+        id UUID PRIMARY KEY,
+        name TEXT NOT NULL,
+        billing_email VARCHAR(255) NOT NULL UNIQUE,
+        billing_address TEXT,
+        phone VARCHAR(50),
+        website TEXT,
+        subscription_id UUID,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        is_active BOOLEAN DEFAULT TRUE,
+        CONSTRAINT fk_subscription FOREIGN KEY (subscription_id) REFERENCES subscriptions(id)
+    );
+    SQL;
+    $pdo->exec($tableSql);
+} catch (PDOException $e) {
+    echo "❌ Organizations table error: " . $e->getMessage();
+    exit;
+}
+
+try {
     // USERS table
     $tableSql = <<<SQL
     CREATE TABLE IF NOT EXISTS users (
@@ -46,28 +69,7 @@ try {
     exit;
 }
 
-try {
-    // ORGANIZATIONS table
-    $tableSql = <<<SQL
-    CREATE TABLE IF NOT EXISTS organizations (
-        id UUID PRIMARY KEY,
-        name TEXT NOT NULL,
-        billing_email VARCHAR(255) NOT NULL UNIQUE,
-        billing_address TEXT,
-        phone VARCHAR(50),
-        website TEXT,
-        subscription_id UUID,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        is_active BOOLEAN DEFAULT TRUE,
-        CONSTRAINT fk_subscription FOREIGN KEY (subscription_id) REFERENCES subscriptions(id)
-    );
-    SQL;
-    $pdo->exec($tableSql);
-} catch (PDOException $e) {
-    echo "❌ Organizations table error: " . $e->getMessage();
-    exit;
-}
+
 
 try {
     // ROLES table
