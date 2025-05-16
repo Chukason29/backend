@@ -1,9 +1,10 @@
 <?php
 $config = require __DIR__ . '/../db.php';
+
 try {
-    // Step 2: Create subscriptions table
+    // USERS table
     $tableSql = <<<SQL
-        CREATE TABLE IF NOT EXISTS users (
+    CREATE TABLE IF NOT EXISTS users (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         email VARCHAR(255) NOT NULL UNIQUE,
         name TEXT,
@@ -19,46 +20,43 @@ try {
         department TEXT,
         deleted_at TIMESTAMP,
         is_active BOOLEAN DEFAULT TRUE,
-
-        -- Foreign Keys
         CONSTRAINT fk_organization FOREIGN KEY (organization_id) REFERENCES organizations(id),
-        CONSTRAINT fk_role FOREIGN KEY (role_id) REFERENCES roles(id),
+        CONSTRAINT fk_role FOREIGN KEY (role_id) REFERENCES roles(id)
     );
-
     SQL;
     $pdo->exec($tableSql);
 } catch (PDOException $e) {
-    echo "❌ Connection or query failed: " . $e->getMessage();
+    echo "❌ Users table error: " . $e->getMessage();
     exit;
 }
+
 try {
-    // Step 2: Create subscriptions table
+    // LINK TOKEN table
     $tableSql = <<<SQL
-    CREATE TABLE link_token (
+    CREATE TABLE IF NOT EXISTS link_token (
         token TEXT PRIMARY KEY,
         email VARCHAR(255) NOT NULL,
         is_used BOOLEAN DEFAULT FALSE,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
-
     SQL;
     $pdo->exec($tableSql);
 } catch (PDOException $e) {
-    echo "❌ Connection or query failed: " . $e->getMessage();
+    echo "❌ Link token table error: " . $e->getMessage();
     exit;
 }
 
 try {
-    // Step 2: Create subscriptions table
+    // ORGANIZATIONS table
     $tableSql = <<<SQL
-    CREATE TABLE organizations (
+    CREATE TABLE IF NOT EXISTS organizations (
         id UUID PRIMARY KEY,
         name TEXT NOT NULL,
         billing_email VARCHAR(255) NOT NULL UNIQUE,
         billing_address TEXT,
         phone VARCHAR(50),
         website TEXT,
-        subscription_id UUID NOT NULL,
+        subscription_id UUID,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         is_active BOOLEAN DEFAULT TRUE,
@@ -67,32 +65,36 @@ try {
     SQL;
     $pdo->exec($tableSql);
 } catch (PDOException $e) {
-    echo "❌ Connection or query failed: " . $e->getMessage();
+    echo "❌ Organizations table error: " . $e->getMessage();
     exit;
 }
 
-
 try {
-    // Step 2: Create subscriptions table
+    // ROLES table
     $tableSql = <<<SQL
-    CREATE TABLE roles (
+    CREATE TABLE IF NOT EXISTS roles (
         id UUID PRIMARY KEY,
         role_name TEXT NOT NULL UNIQUE
     );
-
     SQL;
     $pdo->exec($tableSql);
 } catch (PDOException $e) {
-    echo "❌ Connection or query failed: " . $e->getMessage();
+    echo "❌ Roles table error: " . $e->getMessage();
     exit;
 }
-try {
-    // Step 2: Create subscriptions table
-    $tableSql = <<<SQL
-    CREATE TYPE payment_status_enum AS ENUM ('active', 'pending', 'failed', 'canceled');
 
-    CREATE TABLE subscriptions (
-        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+try {
+    // Define ENUM type only once
+    $pdo->exec("DO \$\$ BEGIN
+        IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'payment_status_enum') THEN
+            CREATE TYPE payment_status_enum AS ENUM ('active', 'pending', 'failed', 'canceled');
+        END IF;
+    END \$\$;");
+
+    // SUBSCRIPTIONS table
+    $tableSql = <<<SQL
+    CREATE TABLE IF NOT EXISTS subscriptions (
+        id UUID PRIMARY KEY,
         organization_id UUID NOT NULL,
         tier_id UUID NOT NULL,
         start_date DATE NOT NULL,
@@ -108,33 +110,27 @@ try {
         deleted_at TIMESTAMP,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-        CONSTRAINT fk_organization FOREIGN KEY (organization_id) REFERENCES organizations(id),
+        CONSTRAINT fk_organization_subscription FOREIGN KEY (organization_id) REFERENCES organizations(id),
         CONSTRAINT fk_tier FOREIGN KEY (tier_id) REFERENCES tiers(id)
     );
     SQL;
     $pdo->exec($tableSql);
 } catch (PDOException $e) {
-    echo "❌ Connection or query failed: " . $e->getMessage();
+    echo "❌ Subscriptions table error: " . $e->getMessage();
     exit;
 }
 
 try {
-    // Step 2: Create subscriptions table
+    // TIERS table
     $tableSql = <<<SQL
-    CREATE TABLE tiers (
+    CREATE TABLE IF NOT EXISTS tiers (
         id UUID PRIMARY KEY,
-        tier_name NOT NULL UNIQUE,
-        max_users INT(5),
+        tier_name TEXT NOT NULL UNIQUE,
+        max_users INT
     );
-
     SQL;
     $pdo->exec($tableSql);
 } catch (PDOException $e) {
-    echo "❌ Connection or query failed: " . $e->getMessage();
-    exit;
-}
-catch (Exception $e) {
-    echo "❌ An error occurred: " . $e->getMessage();
+    echo "❌ Tiers table error: " . $e->getMessage();
     exit;
 }
