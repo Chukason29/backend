@@ -7,7 +7,7 @@ use Firebase\JWT\Key;
 $jwt_secret = $config['secret']['SECRET_KEY'];  
 $jwt_payload = [
     'iat' => time(), // Issued at
-    'iss' => 'https://warehouse.trendsaf.co', // Issuer
+    'iss' => 'https://basefood.trendsaf.co', // Issuer
     'name' => $_SESSION['name'],
     'role_name' => $_SESSION['role_name'],
     'user_id' => $_SESSION['user_id'],

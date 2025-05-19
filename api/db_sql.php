@@ -8,6 +8,7 @@ try {
     CREATE TABLE IF NOT EXISTS tiers (
         id UUID PRIMARY KEY,
         tier_name TEXT NOT NULL UNIQUE,
+        price DECIMAL(10, 2),
         max_users INT
     );
     SQL;
@@ -66,12 +67,11 @@ try {
         last_login TIMESTAMP,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        active BOOLEAN DEFAULT TRUE,
         profile_picture JSONB,
         position TEXT,
         department TEXT,
         deleted_at TIMESTAMP,
-        is_active BOOLEAN DEFAULT TRUE,
+        is_active BOOLEAN DEFAULT FALSE,
         CONSTRAINT fk_organization FOREIGN KEY (organization_id) REFERENCES organizations(id),
         CONSTRAINT fk_role FOREIGN KEY (role_id) REFERENCES roles(id)
     );
@@ -123,7 +123,7 @@ try {
         deleted_at TIMESTAMP,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        CONSTRAINT fk_organization_subscription FOREIGN KEY (organization_id) REFERENCES organizations(id),
+        /*CONSTRAINT fk_organization_subscription FOREIGN KEY (organization_id) REFERENCES organizations(id),*/
         CONSTRAINT fk_tier FOREIGN KEY (tier_id) REFERENCES tiers(id)
     );
     SQL;
