@@ -38,9 +38,18 @@
     $stmt->execute();
     $tier = $stmt->fetch(PDO::FETCH_ASSOC);
     $tier_id = $tier['tier_id'];
+    
 
     try {
         $pdo->beginTransaction();
+
+        $subStmt = $pdo->prepare("INSERT INTO subscriptions (
+        id, organization_id, tier_id, renewal_date, payment_status,
+        price) VALUES ( :id, :tier_id, NULL, 'active', 0)");
+        $subStmt->execute([
+            ':id' => $subscription_id,
+            ':tier_id' => $tier_id,
+        ]);
         #INSERT INTO ORGANIZATION TABLE
         $stmt1 = $pdo->prepare(
         "INSERT INTO organizations ( id, name, subscription_id, billing_email, billing_address, phone, website) 
@@ -61,13 +70,6 @@
     $stmt->bindValue(':user_id', $user_id);
     $stmt->execute();
 
-    $subStmt = $pdo->prepare("INSERT INTO subscriptions (
-        id, organization_id, tier_id, renewal_date, payment_status,
-        price) VALUES ( :id, :tier_id, NULL, 'active', 0)");
-    $subStmt->execute([
-        ':id' => $subscription_id,
-        ':tier_id' => $tier_id,
-    ]);
      #TODO commit data to database and send link to email address
     if ($pdo->commit() ){
         require_once __DIR__ . '/authenticate.php';
