@@ -31,7 +31,38 @@ try {
     echo "❌ Roles table error: " . $e->getMessage();
     exit;
 }
+try {
+    // Define ENUM type only once
+    $pdo->exec("DO \$\$ BEGIN
+        IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'payment_status_enum') THEN
+            CREATE TYPE payment_status_enum AS ENUM ('active', 'pending', 'failed', 'canceled');
+        END IF;
+    END \$\$;");
 
+    // SUBSCRIPTIONS table
+    $tableSql = <<<SQL
+    CREATE TABLE IF NOT EXISTS subscriptions (
+        id UUID PRIMARY KEY,
+        tier_id UUID,
+        start_date DATE,
+        renewal_date DATE,
+        payment_status payment_status_enum,
+        payment_method_id TEXT,
+        auto_renew BOOLEAN DEFAULT FALSE,
+        price DECIMAL(10, 2),
+        currency CHAR(3),
+        features_enabled JSONB,
+        deleted_at TIMESTAMP,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT fk_tier FOREIGN KEY (tier_id) REFERENCES tiers(id)
+    );
+    SQL;
+    $pdo->exec($tableSql);
+} catch (PDOException $e) {
+    echo "❌ Subscriptions table error: " . $e->getMessage();
+    exit;
+}
 try {
     // ORGANIZATIONS table
     $tableSql = <<<SQL
@@ -96,39 +127,6 @@ try {
     $pdo->exec($tableSql);
 } catch (PDOException $e) {
     echo "❌ Link token table error: " . $e->getMessage();
-    exit;
-}
-
-try {
-    // Define ENUM type only once
-    $pdo->exec("DO \$\$ BEGIN
-        IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'payment_status_enum') THEN
-            CREATE TYPE payment_status_enum AS ENUM ('active', 'pending', 'failed', 'canceled');
-        END IF;
-    END \$\$;");
-
-    // SUBSCRIPTIONS table
-    $tableSql = <<<SQL
-    CREATE TABLE IF NOT EXISTS subscriptions (
-        id UUID PRIMARY KEY,
-        tier_id UUID,
-        start_date DATE,
-        renewal_date DATE,
-        payment_status payment_status_enum,
-        payment_method_id TEXT,
-        auto_renew BOOLEAN DEFAULT FALSE,
-        price DECIMAL(10, 2),
-        currency CHAR(3),
-        features_enabled JSONB,
-        deleted_at TIMESTAMP,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        CONSTRAINT fk_tier FOREIGN KEY (tier_id) REFERENCES tiers(id)
-    );
-    SQL;
-    $pdo->exec($tableSql);
-} catch (PDOException $e) {
-    echo "❌ Subscriptions table error: " . $e->getMessage();
     exit;
 }
 
