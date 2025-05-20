@@ -76,7 +76,13 @@
         respond([
             'status' => 'success',
             'message' => 'Organization created successfully',
-            'token' => $jwt
+            'access_token' => $jwt,
+            "user" => [
+                "name" => $_SESSION['name'],
+                "email" => $_SESSION['email'],
+                "role_name" => $_SESSION['role_name'],
+                "organization_id" => $_SESSION['organization_id']
+            ],
         ], 200);
         exit;
     }else{

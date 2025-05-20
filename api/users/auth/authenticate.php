@@ -20,6 +20,14 @@ $jwt_payload = [
 $jwt = JWT::encode($jwt_payload, $jwt_secret, 'HS256');
 
 // Store in session (if needed)
+setcookie('token', $jwt, [
+    'expires' => time() + 604800,
+    'path' => '/',
+    'domain' => '', // optional: use your domain
+    'secure' => true,     // true if using HTTPS
+    'httponly' => true,   // prevent JS access
+    'samesite' => 'Lax'   // or 'Strict' / 'None' if cross-site
+]);
 $_SESSION['jwt'] = $jwt;
 
 // Return response

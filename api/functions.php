@@ -103,15 +103,12 @@ function getEmailFromToken($token) {
     return $payload['email']; // Return the email if valid
 }
 
-
 function emailVerifyMessage($imageLink, $message){
     return [
         "image-link" => $imageLink,
         "message" => $message
     ];
 }
-
-
 
 function sendHTMLEmail($toEmail, $toName, $verificationLink, $myTemplate) {
     require __DIR__ . '/PHPMailer/src/PHPMailer.php';
@@ -155,6 +152,20 @@ function sendHTMLEmail($toEmail, $toName, $verificationLink, $myTemplate) {
     } catch (Exception $e) {
         return "Error: {$mail->ErrorInfo}";
     }
+}
+
+function generateAccessToken($userId, $secret, $expiresIn = 900) {
+    $issuedAt = time();
+    $payload = [
+        'iss' => 'trendsaf-api',
+        'iat' => $issuedAt,
+        'exp' => $issuedAt + $expiresIn,
+        'sub' => $userId
+    ];
+    return JWT::encode($payload, $secret, 'HS256');
+}
+function generateRefreshToken() {
+    return bin2hex(random_bytes(64)); // 128 chars hex string
 }
 
 /*function investmentEmail($toEmail, $toName, $invoice_number, $product_name, $investment_amount, $expected_returns, $start_date, $one_year_later, $payment_ref, $myTemplate) {

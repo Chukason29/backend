@@ -130,3 +130,18 @@ try {
     exit;
 }
 
+try {
+    // TIERS table
+    $tableSql = <<<SQL
+    CREATE TABLE IF NOT EXISTS refresh_tokens (
+        token TEXT PRIMARY KEY,
+        user_id UUID REFERENCES users(id),
+        expires_at TIMESTAMP NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    SQL;
+    $pdo->exec($tableSql);
+} catch (PDOException $e) {
+    echo "❌ Tiers table error: " . $e->getMessage();
+    exit;
+}
