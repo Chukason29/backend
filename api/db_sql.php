@@ -45,7 +45,9 @@ try {
         subscription_id UUID,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        is_active BOOLEAN DEFAULT TRUE
+        is_active BOOLEAN DEFAULT TRUE,
+        CONSTRAINT fk_subscription FOREIGN KEY (subscription_id) REFERENCES subscriptions(id);
+
     );
     SQL;
     $pdo->exec($tableSql);
