@@ -110,7 +110,6 @@ try {
     $tableSql = <<<SQL
     CREATE TABLE IF NOT EXISTS subscriptions (
         id UUID PRIMARY KEY,
-        organization_id UUID,
         tier_id UUID,
         start_date DATE,
         renewal_date DATE,
@@ -123,7 +122,6 @@ try {
         deleted_at TIMESTAMP,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        /*CONSTRAINT fk_organization_subscription FOREIGN KEY (organization_id) REFERENCES organizations(id),*/
         CONSTRAINT fk_tier FOREIGN KEY (tier_id) REFERENCES tiers(id)
     );
     SQL;
