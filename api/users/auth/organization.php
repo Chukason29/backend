@@ -44,7 +44,7 @@
         $pdo->beginTransaction();
 
         $subStmt = $pdo->prepare("INSERT INTO subscriptions (
-        id, organization_id, tier_id, renewal_date, payment_status,
+        id, tier_id, renewal_date, payment_status,
         price) VALUES ( :id, :tier_id, NULL, 'active', 0)");
         $subStmt->execute([
             ':id' => $subscription_id,
