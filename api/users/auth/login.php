@@ -37,14 +37,16 @@
     $_SESSION['name'] = $name = $user['name'];
     $_SESSION['user_id'] = $user_id = $user['id'];
     $_SESSION['email'] = $email = $user['email'];
-    $_SESSION['organization_id'] = $organization_id = $user['organization_id'];
+    $_SESSION['organization_id'] = $user['organization_id'];
+    $organization_id = $user['organization_id'];
     $role_id = $user['role_id'];
     $stmt = $pdo->prepare("SELECT * FROM roles WHERE id = :role_id");
     $stmt->bindValue(':role_id', $role_id);
     $stmt->execute();
     $role = $stmt->fetch(PDO::FETCH_ASSOC);
     
-    $_SESSION['role_name'] = $role_name = $role['role_name'];
+    $_SESSION['role_name'] = $role['role_name'];
+    $role_name = $_SESSION['role_name'];
     
     #TODO ==> Check if account is activated
     if (!$user['is_active']){ 
