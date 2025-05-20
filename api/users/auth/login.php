@@ -97,4 +97,9 @@
             'message' => 'Login successful',
             'token' => $jwt
         ], 200);
+    }else{
+        respond([
+            'status' => 'error',
+            'message' => 'Invalid email or password'
+        ], 200);
     }
