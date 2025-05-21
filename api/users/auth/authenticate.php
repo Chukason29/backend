@@ -10,7 +10,7 @@ $refreshToken = generateRefreshToken();
 $refreshExpiry = date('Y-m-d H:i:s', time() + 60 * 60 * 24 * 30); // 30 days
 
 $stmt = $pdo->prepare("INSERT INTO refresh_tokens (token, user_id, expires_at) VALUES (?, ?, ?)");
-$stmt->execute([$refreshToken, $userId, $refreshExpiry]);
+$stmt->execute([$refreshToken, $_SESSION['user_id'], $refreshExpiry]);
 
 // Store in session (if needed)
 setcookie('refresh_token', $refreshToken, [
