@@ -22,14 +22,6 @@ if ($method === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
-if ($config['mail']['password']) {
-    respond(['email_password' => $config['mail']['password']], 200);
-    exit;
-}else {
-    respond(['error' => 'Email password not set'], 500);
-    exit;
-}
-
 
 try {
     if ($method === 'POST' && $uri === '/api/register') {

@@ -7,6 +7,14 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
+if ($config['mail']['password']) {
+    respond(['email_password' => $config['mail']['password']], 200);
+    exit;
+}else {
+    respond(['error' => 'Email password not set'], 500);
+    exit;
+}
+
 function isValidEmail($email) {
     // 1️⃣ Check email format using PHP's built-in filter
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
