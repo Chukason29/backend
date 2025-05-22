@@ -6,6 +6,12 @@ use Firebase\JWT\Key;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
+function respond($data, $code = 200) {
+    http_response_code($code);
+    header('Content-Type: application/json');
+    echo json_encode($data);
+    exit;
+}
 
 if ($config['mail']['password']) {
     respond(['email_password' => $config['mail']['password']], 200);
@@ -14,6 +20,7 @@ if ($config['mail']['password']) {
     respond(['error' => 'Email password not set'], 500);
     exit;
 }
+
 
 function isValidEmail($email) {
     // 1️⃣ Check email format using PHP's built-in filter
