@@ -10,6 +10,7 @@ $password = $config['db']['password'];
 $charset = $config['db']['charset'];
 
 
+
 // DSN
 $dsn = "pgsql:host=$host;port=$port;dbname=$dbname";
 
