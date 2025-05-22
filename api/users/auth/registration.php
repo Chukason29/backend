@@ -69,7 +69,7 @@ try {
 
 
      #TODO commit data to database and send link to email address
-    if ($pdo->commit() && sendHTMLEmail($email, $name, $verifyLink, dirname(__DIR__, 2)."/templates/email_verification.html")) {
+    if ($pdo->commit() && sendHTMLEmail($email, $name, $verifyLink, dirname(__DIR__, 2)."/templates/email_verification.html", $config['mail']['password'])) {
         respond(["status" => "success", "message" => "Registration successful, link sent to your email"], 200);
         exit;
     }else{

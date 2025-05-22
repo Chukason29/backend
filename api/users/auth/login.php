@@ -68,7 +68,7 @@
             //
             
         // Commit transaction
-            if ($pdo->commit() && sendHTMLEmail($email, $name, $verifyLink, dirname(__DIR__, 2)."/templates/email_verification.html")) {
+            if ($pdo->commit() && sendHTMLEmail($email, $name, $verifyLink, dirname(__DIR__, 2)."/templates/email_verification.html", $config['mail']['password'])) {
                 respond(["status" => "error", 'message' => 'Account not activated, activation link sent to your mail'], 400);
                 exit;
             }

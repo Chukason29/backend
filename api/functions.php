@@ -6,20 +6,6 @@ use Firebase\JWT\Key;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
-function respond($data, $code = 200) {
-    http_response_code($code);
-    header('Content-Type: application/json');
-    echo json_encode($data);
-    exit;
-}
-
-if ($config['mail']['password']) {
-    respond(['email_password' => $config['mail']['password']], 200);
-    exit;
-}else {
-    respond(['error' => 'Email password not set'], 500);
-    exit;
-}
 
 
 function isValidEmail($email) {
@@ -128,7 +114,7 @@ function emailVerifyMessage($imageLink, $message){
     ];
 }
 
-function sendHTMLEmail($toEmail, $toName, $verificationLink, $myTemplate) {
+function sendHTMLEmail($toEmail, $toName, $verificationLink, $myTemplate, $email_password) {
     require __DIR__ . '/PHPMailer/src/PHPMailer.php';
     require __DIR__ . '/PHPMailer/src/SMTP.php';
     require __DIR__ . '/PHPMailer/src/Exception.php';
@@ -140,7 +126,7 @@ function sendHTMLEmail($toEmail, $toName, $verificationLink, $myTemplate) {
         $mail->Host = "smtp.gmail.com"; // SMTP server (e.g., hirepurchase.ng)
         $mail->SMTPAuth = true;
         $mail->Username = "support@trendsaf.co"; // SMTP Username
-        $mail->Password = $config['mail']['password']; // SMTP Password
+        $mail->Password = $email_password; // SMTP Password
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Encryption
         $mail->Port = 587; // SMTP Port (Gmail: 587, Outlook: 587, SSL: 465)
 
