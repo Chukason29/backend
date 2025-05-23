@@ -54,10 +54,10 @@
         
     // Commit transaction
         if ($pdo->commit()) {
-            header("Location: " . rtrim($config['url']['BASE_URL'], '/') . "/verification-success.html");
+            header("Location: " . rtrim($config['url']['BASE_URL'], '/') . "/auth/verify/token");
             exit;
         }else{
-            header("Location: " . rtrim($config['url']['BASE_URL'], '/') . "/verification-failure.html");
+            header("Location: " . rtrim($config['url']['BASE_URL'], '/') . "/auth/verify/token");
             exit;
         }
     } catch (PDOException $e) {

@@ -89,7 +89,7 @@
     if (password_verify($password, $user['password_hash'])) {
         if ($organization_id == null){ 
             $_SESSION['user_id'] = $user_id;
-            header("Location: " . rtrim($config['url']['BASE_URL'], '/') . "/create-organization");
+            header("Location: " . rtrim($config['url']['BASE_URL'], '/') . "/auth/organization");
             exit;
         }
         // Return session or token info
