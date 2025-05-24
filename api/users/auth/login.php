@@ -47,6 +47,18 @@
     $organization_id = $user['organization_id'];
     $role_id = $user['role_id'];
 
+    #Collecting the role name from the roles table for the user
+    $stmt = $pdo->prepare("SELECT * FROM roles WHERE id = :role_id");
+    $stmt->bindValue(':role_id', $role_id);
+    $stmt->execute();
+    $role = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$role) {
+        respond(["status" => "error", 'message' => 'Role not found'], 500);
+        exit;
+    }
+    
+    $role_name = $role['role_name'];
+
     
     #TODO ==> Check if account is activated
     if (!$user['is_active'] && $role_name == $config['roles']['ORGANIZATION_ADMIN']){ 
@@ -93,15 +105,8 @@
     $_SESSION['user_id'] = $user_id;
     $_SESSION['email'] = $email;
     $_SESSION['organization_id'] = $organization_id ?? null;
+    $_SESSION['role_name'] = $role_name;
     
-
-    $stmt = $pdo->prepare("SELECT * FROM roles WHERE id = :role_id");
-    $stmt->bindValue(':role_id', $role_id);
-    $stmt->execute();
-    $role = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-    $_SESSION['role_name'] = $role['role_name'];
-    $role_name = $_SESSION['role_name'];
 
     #TODO ==> Check if the user is organization admin and organization_id is null
     if ($role_name == $config['roles']['ORGANIZATION_ADMIN'] && $user['organization_id'] == null){ 
