@@ -41,6 +41,13 @@
         exit;
     }
     
+    $name = $user['name'];
+    $user_id = $user['id'];
+    $email = $user['email'];
+    $organization_id = $user['organization_id'];
+    $role_id = $user['role_id'];
+
+    
     #TODO ==> Check if account is activated
     if (!$user['is_active'] && $role_name == $config['roles']['ORGANIZATION_ADMIN']){ 
         $verifyLink = $config['url']['BASE_URL'].'/api/verify?token='.$token;
@@ -79,17 +86,14 @@
         header("Location: " . rtrim($config['url']['BASE_URL'], '/') . "/auth/role-password-reset?token=".$token);
         exit;
     }
-    $name = $user['name'];
-    $user_id = $user['id'];
-    $email = $user['email'];
-    $organization_id = $user['organization_id'];
+    
 
     //Adding them is session variables
     $_SESSION['name'] = $name;
     $_SESSION['user_id'] = $user_id;
     $_SESSION['email'] = $email;
     $_SESSION['organization_id'] = $organization_id ?? null;
-    $role_id = $user['role_id'];
+    
 
     $stmt = $pdo->prepare("SELECT * FROM roles WHERE id = :role_id");
     $stmt->bindValue(':role_id', $role_id);
