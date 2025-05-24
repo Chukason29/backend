@@ -40,7 +40,7 @@ if (emailExists($pdo, $email)) {
 }
 #TODO ==> Create a timed token based on the user's email and attach to the base url
 $token = generateTimedToken($email, 172800); //expires in 48hours after creation
-$verifyLink = $config['url']['BASE_URL'].'/api/verify?token='.$token;
+$verifyLink = $config['url']['LIVE_URL'].'/api/verify?token='.$token;
 $stmt = $pdo->prepare("SELECT id FROM roles WHERE role_name = ?"); // Fast check
 $stmt->execute([$config['roles']['ORGANIZATION_ADMIN']]);
 $role = $stmt->$roles = $stmt->fetch(PDO::FETCH_ASSOC);

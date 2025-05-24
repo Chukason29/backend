@@ -19,6 +19,7 @@
 
     $email = sanitizeInput($data['email']);
     $password = $data['password'];
+    $token = generateTimedToken($email, 172800); //expires in 48hours after creation
 
 
     #TODO ==> Check if account exists
@@ -31,26 +32,17 @@
 
     #TODO ==> Check if account exists
     if (!$user){
-        respond(["status" => "error", 'message' => 'Account not found'], 400);
+        respond(["status" => "error", 'message' => 'Incorrect email or password'], 400);
         exit;
     }
-    $_SESSION['name'] = $name = $user['name'];
-    $_SESSION['user_id'] = $user_id = $user['id'];
-    $_SESSION['email'] = $email = $user['email'];
-    $_SESSION['organization_id'] = $user['organization_id'];
-    $organization_id = $user['organization_id'];
-    $role_id = $user['role_id'];
-    $stmt = $pdo->prepare("SELECT * FROM roles WHERE id = :role_id");
-    $stmt->bindValue(':role_id', $role_id);
-    $stmt->execute();
-    $role = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-    $_SESSION['role_name'] = $role['role_name'];
-    $role_name = $_SESSION['role_name'];
+    #TODO ==> Check if password is correct
+    if (!password_verify($password, $user['password_hash'])) {
+        respond(["status" => "error", 'message' => 'Incorrect email or password'], 400);
+        exit;
+    }
     
     #TODO ==> Check if account is activated
-    if (!$user['is_active']){ 
-        $token = generateTimedToken($email, 172800); //expires in 48hours after creation
+    if (!$user['is_active'] && $role_name == $config['roles']['ORGANIZATION_ADMIN']){ 
         $verifyLink = $config['url']['BASE_URL'].'/api/verify?token='.$token;
 
         try {
@@ -82,32 +74,37 @@
             $pdo->rollBack();
             respond(["status" => "error", 'message' => 'Error: ' . $e->getMessage()], 500);
         }
+    }elseif (!$user['is_active'] && $role_name != $config['roles']['ORGANIZATION_ADMIN']) {
+        #TODO ==> If the user is not an organization admin, redirect to the role password reset page
+        header("Location: " . rtrim($config['url']['BASE_URL'], '/') . "/auth/role-password-reset?token=".$token);
+        exit;
     }
+    $name = $user['name'];
+    $user_id = $user['id'];
+    $email = $user['email'];
+    $organization_id = $user['organization_id'];
 
+    //Adding them is session variables
+    $_SESSION['name'] = $name;
+    $_SESSION['user_id'] = $user_id;
+    $_SESSION['email'] = $email;
+    $_SESSION['organization_id'] = $organization_id ?? null;
+    $role_id = $user['role_id'];
+
+    $stmt = $pdo->prepare("SELECT * FROM roles WHERE id = :role_id");
+    $stmt->bindValue(':role_id', $role_id);
+    $stmt->execute();
+    $role = $stmt->fetch(PDO::FETCH_ASSOC);
     
+    $_SESSION['role_name'] = $role['role_name'];
+    $role_name = $_SESSION['role_name'];
 
-    if (password_verify($password, $user['password_hash'])) {
-        if ($organization_id == null){ 
+    #TODO ==> Check if the user is organization admin and organization_id is null
+    if ($role_name == $config['roles']['ORGANIZATION_ADMIN'] && $user['organization_id'] == null){ 
             $_SESSION['user_id'] = $user_id;
             header("Location: " . rtrim($config['url']['BASE_URL'], '/') . "/auth/organization");
             exit;
-        }
-        // Return session or token info
-        require_once __DIR__ . '/authenticate.php';
-        respond([
-            'status' => 'success',
-            'message' => 'Login successful',
-            'access_token' => $jwt,
-            "user" => [
-                "name" => $_SESSION['name'],
-                "email" => $_SESSION['email'],
-                "role_name" => $_SESSION['role_name'],
-                "organization_id" => $_SESSION['organization_id']
-            ],
-        ], 200);
-    }else{
-        respond([
-            'status' => 'error',
-            'message' => 'Invalid email or password'
-        ], 200);
     }
+
+    require_once __DIR__ . '/authenticate.php';
+    

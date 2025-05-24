@@ -72,19 +72,8 @@
 
      #TODO commit data to database and send link to email address
     if ($pdo->commit() ){
+        $_SESSION['organization_id'] = $organization_id;
         require_once __DIR__ . '/authenticate.php';
-        respond([
-            'status' => 'success',
-            'message' => 'Organization created successfully',
-            'access_token' => $jwt,
-            "user" => [
-                "name" => $_SESSION['name'],
-                "email" => $_SESSION['email'],
-                "role_name" => $_SESSION['role_name'],
-                "organization_id" => $_SESSION['organization_id']
-            ],
-        ], 200);
-        exit;
     }else{
         respond(["status" => "error", "message" => "Unsuccessful"], 200);   
     }

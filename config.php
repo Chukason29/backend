@@ -118,7 +118,8 @@ return [
         ],
     ],
     'url' => [
-        'BASE_URL' => $_ENV['BASE_URL'] ?? 'https://warehouse.trendsaf.co',
+        'BASE_URL' => $_ENV['BASE_URL'] ?? null,
+        'LIVE_URL' => $_ENV['LIVE_URL'] ?? null,
     ],
     'roles' => [
         'ORGANIZATION_ADMIN' => $_ENV['ORGANIZATION_ADMIN'] ?? null,
