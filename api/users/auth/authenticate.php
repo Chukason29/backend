@@ -40,7 +40,7 @@ respond(
             'id' => $_SESSION['user_id'],
             'name' => $_SESSION['name'],
             'email' => $_SESSION['email'],
-            'role_id' => $_SESSION['role_id'],
+            'organization_id' => $_SESSION['organization_id'],
             'role_name' => $_SESSION['role_name']
         ]
     ],
