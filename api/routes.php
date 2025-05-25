@@ -1,6 +1,7 @@
 <?php
 
-require __DIR__ . '/../db.php';
+echo "This is the API routes file. Please refer to the documentation for usage.";
+/*require __DIR__ . '/../db.php';
 require_once "./functions.php";
 
 ob_end_clean();
@@ -21,6 +22,13 @@ header("Access-Control-Allow-Headers: Content-Type, Authorization");
 if ($method === 'OPTIONS') {
     http_response_code(200);
     exit;
+}
+
+function respond($data, $code = 200) {
+        http_response_code($code);
+        header('Content-Type: application/json');
+        echo json_encode($data);
+        exit;
 }
 
 try {
@@ -65,3 +73,4 @@ try {
 } catch (PDOException $e) {
     respond(['error' => $e->getMessage()], 500);
 }
+*/

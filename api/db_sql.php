@@ -104,6 +104,7 @@ try {
         department TEXT,
         deleted_at TIMESTAMP,
         is_active BOOLEAN DEFAULT FALSE,
+        is_deleted BOOLEAN DEFAULT FALSE,
         CONSTRAINT fk_organization FOREIGN KEY (organization_id) REFERENCES organizations(id),
         CONSTRAINT fk_role FOREIGN KEY (role_id) REFERENCES roles(id)
     );

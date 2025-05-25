@@ -28,11 +28,18 @@
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    
 
+    
+    
     #TODO ==> Check if account exists
     if (!$user){
         respond(["status" => "error", 'message' => 'Incorrect email or password'], 400);
+        exit;
+    }
+    #TODO ==> Check if user is deleted
+    if ($user['is_deleted'] == TRUE) {
+        # code...
+        respond(["status" => "error", 'message' => 'Account has been deactivated'], 400);
         exit;
     }
     #TODO ==> Check if password is correct
