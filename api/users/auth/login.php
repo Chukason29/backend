@@ -24,11 +24,6 @@
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    respond(["status" => "error", 'user' => $user], 400);
-
-
-    
-    
     #TODO ==> Check if account exists
     if (!$user){
         respond(["status" => "error", 'message' => 'Incorrect email or password'], 400);
