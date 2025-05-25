@@ -37,7 +37,7 @@ respond(
         'message' => 'Login successful',
         'access_token' => $accessToken,
         'user' => [
-            'id' => $_SESSION['id'],
+            'id' => $_SESSION['user_id'],
             'name' => $_SESSION['name'],
             'email' => $_SESSION['email'],
             'role_id' => $_SESSION['role_id'],
