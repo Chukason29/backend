@@ -109,6 +109,15 @@
     $_SESSION['organization_id'] = $organization_id ?? null;
     $_SESSION['role_name'] = $role_name;
 
+    
+    
+
+    #TODO ==> Check if the user is organization admin and organization_id is null
+    if ($role_name == $config['roles']['ORGANIZATION_ADMIN'] && $user['organization_id'] == null){ 
+            $_SESSION['user_id'] = $user_id;
+            header("Location: " . rtrim($config['url']['BASE_URL'], '/') . "/auth/organization");
+            exit;
+    }
     respond([
         "status" => "success",
         "message" => "Login successful",
@@ -120,14 +129,6 @@
             "role_name" => $role_name
         ]
     ]);
-    
-
-    #TODO ==> Check if the user is organization admin and organization_id is null
-    if ($role_name == $config['roles']['ORGANIZATION_ADMIN'] && $user['organization_id'] == null){ 
-            $_SESSION['user_id'] = $user_id;
-            header("Location: " . rtrim($config['url']['BASE_URL'], '/') . "/auth/organization");
-            exit;
-    }
     
     //require_once __DIR__ . '/authenticate.php';
     
