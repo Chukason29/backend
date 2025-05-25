@@ -114,7 +114,7 @@
 
     #TODO ==> Check if the user is organization admin and organization_id is null
     /*if ($role_name == $config['roles']['ORGANIZATION_ADMIN'] && $user['organization_id'] == null){ 
-            $_SESSION['user_id'] = $user_id;
+            /$_SESSION['user_id'] = $user_id;
             header("Location: " . rtrim($config['url']['BASE_URL'], '/') . "/auth/organization");
             exit;
     }*/
@@ -127,7 +127,7 @@
             "email" => $email,
             "organization_id" => $organization_id,
             "role_name" => $role_name,
-            "config_role" => $config['roles']['ORGANIZATION_ADMIN']
+            "config_role" => $config['url']['BASE_URL']
         ]
     ]);
     
