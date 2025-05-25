@@ -59,17 +59,7 @@
     }
     
     $role_name = $role['role_name'];
-respond([
-        "status" => "success",
-        "message" => "Login successful",
-        "data" => [
-            "name" => $name,
-            "user_id" => $user_id,
-            "email" => $email,
-            "organization_id" => $organization_id,
-            "role_name" => $role_name
-        ]
-    ]);
+
     
     #TODO ==> Check if account is activated
     if (!$user['is_active'] && $role_name == $config['roles']['ORGANIZATION_ADMIN']){ 
@@ -109,6 +99,17 @@ respond([
         header("Location: " . rtrim($config['url']['BASE_URL'], '/') . "/auth/role-password-reset?token=".$token);
         exit;
     }
+    respond([
+        "status" => "success",
+        "message" => "Login successful",
+        "data" => [
+            "name" => $name,
+            "user_id" => $user_id,
+            "email" => $email,
+            "organization_id" => $organization_id,
+            "role_name" => $role_name
+        ]
+    ]);
     
 
     //Adding them is session variables
