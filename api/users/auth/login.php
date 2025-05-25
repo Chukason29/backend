@@ -99,6 +99,16 @@
         header("Location: " . rtrim($config['url']['BASE_URL'], '/') . "/auth/role-password-reset?token=".$token);
         exit;
     }
+    
+    
+
+    //Adding them is session variables
+    $_SESSION['name'] = $name;
+    $_SESSION['user_id'] = $user_id;
+    $_SESSION['email'] = $email;
+    $_SESSION['organization_id'] = $organization_id ?? null;
+    $_SESSION['role_name'] = $role_name;
+
     respond([
         "status" => "success",
         "message" => "Login successful",
@@ -110,14 +120,6 @@
             "role_name" => $role_name
         ]
     ]);
-    
-
-    //Adding them is session variables
-    $_SESSION['name'] = $name;
-    $_SESSION['user_id'] = $user_id;
-    $_SESSION['email'] = $email;
-    $_SESSION['organization_id'] = $organization_id ?? null;
-    $_SESSION['role_name'] = $role_name;
     
 
     #TODO ==> Check if the user is organization admin and organization_id is null
