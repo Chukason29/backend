@@ -18,8 +18,8 @@ header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 //file_put_contents('log.txt', "REQUEST_URI: " . $_SERVER['REQUEST_URI'] . PHP_EOL, FILE_APPEND);
-echo "This is the API routes file. Please refer to the documentation for usage.";
-/*
+
+
 // Handle OPTIONS preflight
 if ($method === 'OPTIONS') {
     http_response_code(200);
@@ -75,4 +75,3 @@ try {
 } catch (PDOException $e) {
     respond(['error' => $e->getMessage()], 500);
 }
-*/
