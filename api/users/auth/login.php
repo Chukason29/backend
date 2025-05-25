@@ -114,6 +114,17 @@
             header("Location: " . rtrim($config['url']['BASE_URL'], '/') . "/auth/organization");
             exit;
     }
-
-    require_once __DIR__ . '/authenticate.php';
+    respond([
+        "status" => "success",
+        "message" => "Login successful",
+        "data" => [
+            "name" => $name,
+            "user_id" => $user_id,
+            "email" => $email,
+            "organization_id" => $organization_id,
+            "role_name" => $role_name,
+            "token" => $token
+        ]
+    ]);
+    //require_once __DIR__ . '/authenticate.php';
     
