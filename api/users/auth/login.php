@@ -1,11 +1,7 @@
 <?php
     session_start();
-    #TODO
-    // JSON body
+    ob_end_clean();
     $data = json_decode(file_get_contents('php://input'), true);
-    
-
-    // Respond helper
    
     #TODO ==> Make sure email and password is inputted
     if (!isset($data['email'], $data['password'])) {
@@ -115,8 +111,8 @@
     #TODO ==> Check if the user is organization admin and organization_id is null
     if ($role_name == $config['roles']['ORGANIZATION_ADMIN'] && $user['organization_id'] == null){ 
             //$_SESSION['user_id'] = $user_id;
-            //header("Location: " . rtrim($config['url']['BASE_URL'], '/') . "/auth/organization");
-            respond([
+            header("Location: " . rtrim($config['url']['BASE_URL'], '/') . "/auth/organization");
+            /*respond([
                 "status" => "success",
                 "message" => "Login successful",
                 "data" => [
@@ -127,7 +123,7 @@
                     "role_name" => $role_name,
                     "config_role" => rtrim($config['url']['BASE_URL'], '/') . "/auth/organization"
                 ]
-            ]);
+            ]);*/
             exit;
     }
     
