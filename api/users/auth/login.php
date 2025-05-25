@@ -126,7 +126,8 @@
             "user_id" => $user_id,
             "email" => $email,
             "organization_id" => $organization_id,
-            "role_name" => $role_name
+            "role_name" => $role_name,
+            "config_role" => $config['roles']['ORGANIZATION_ADMIN']
         ]
     ]);
     
