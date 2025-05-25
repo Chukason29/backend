@@ -46,16 +46,7 @@
     $email = $user['email'];
     $organization_id = $user['organization_id'];
     $role_id = $user['role_id'];
-    respond([
-        "status" => "success",
-        "message" => "Login successful",
-        "data" => [
-            "name" => $name,
-            "user_id" => $user_id,
-            "email" => $email,
-            "organization_id" => $organization_id
-        ]
-    ]);
+
 
     #Collecting the role name from the roles table for the user
     $stmt = $pdo->prepare("SELECT * FROM roles WHERE id = :role_id");
@@ -68,7 +59,17 @@
     }
     
     $role_name = $role['role_name'];
-
+respond([
+        "status" => "success",
+        "message" => "Login successful",
+        "data" => [
+            "name" => $name,
+            "user_id" => $user_id,
+            "email" => $email,
+            "organization_id" => $organization_id,
+            "role_name" => $role_name
+        ]
+    ]);
     
     #TODO ==> Check if account is activated
     if (!$user['is_active'] && $role_name == $config['roles']['ORGANIZATION_ADMIN']){ 
