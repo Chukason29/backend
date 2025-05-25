@@ -3,8 +3,7 @@
     #TODO
     // JSON body
     $data = json_decode(file_get_contents('php://input'), true);
-    echo "login dey worry oo";
-    exit;
+    
 
     // Respond helper
    
@@ -13,7 +12,8 @@
         respond(["status" => "error",'message' => 'All fields are required'], 400);
         exit;
     }
-
+    echo "login dey worry oo";
+    exit;
     $email = sanitizeInput($data['email']);
     $password = $data['password'];
     $token = generateTimedToken($email, 172800); //expires in 48hours after creation
