@@ -46,6 +46,16 @@
     $email = $user['email'];
     $organization_id = $user['organization_id'];
     $role_id = $user['role_id'];
+    respond([
+        "status" => "success",
+        "message" => "Login successful",
+        "data" => [
+            "name" => $name,
+            "user_id" => $user_id,
+            "email" => $email,
+            "organization_id" => $organization_id
+        ]
+    ]);
 
     #Collecting the role name from the roles table for the user
     $stmt = $pdo->prepare("SELECT * FROM roles WHERE id = :role_id");
@@ -114,17 +124,6 @@
             header("Location: " . rtrim($config['url']['BASE_URL'], '/') . "/auth/organization");
             exit;
     }
-    respond([
-        "status" => "success",
-        "message" => "Login successful",
-        "data" => [
-            "name" => $name,
-            "user_id" => $user_id,
-            "email" => $email,
-            "organization_id" => $organization_id,
-            "role_name" => $role_name,
-            "token" => $token
-        ]
-    ]);
+    
     //require_once __DIR__ . '/authenticate.php';
     
