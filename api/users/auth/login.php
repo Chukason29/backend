@@ -12,8 +12,7 @@
         respond(["status" => "error",'message' => 'All fields are required'], 400);
         exit;
     }
-    echo "login dey worry oo";
-    exit;
+    
     $email = sanitizeInput($data['email']);
     $password = $data['password'];
     $token = generateTimedToken($email, 172800); //expires in 48hours after creation
@@ -24,6 +23,8 @@
     $stmt->bindValue(':email', $email);
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    respond(["status" => "error", 'user' => $user], 400);
 
 
     
