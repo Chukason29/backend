@@ -92,7 +92,10 @@
         }
     }elseif (!$user['is_active'] && $role_name != $config['roles']['ORGANIZATION_ADMIN']) {
         #TODO ==> If the user is not an organization admin, redirect to the role password reset page
-        header("Location: " . rtrim($config['url']['BASE_URL'], '/') . "/auth/role-password-reset?token=".$token);
+        response([
+            "status" => "redirect", 
+            "redirect_url" => $config['url']['BASE_URL'] . '/auth/role-password-reset?token='.$token
+        ]);
         exit;
     }
     
@@ -110,20 +113,10 @@
 
     #TODO ==> Check if the user is organization admin and organization_id is null
     if ($role_name == $config['roles']['ORGANIZATION_ADMIN'] && $user['organization_id'] == null){ 
-            //$_SESSION['user_id'] = $user_id;
-            header("Location: " . rtrim($config['url']['BASE_URL'], '/') . "/auth/organization");
-            /*respond([
-                "status" => "success",
-                "message" => "Login successful",
-                "data" => [
-                    "name" => $name,
-                    "user_id" => $user_id,
-                    "email" => $email,
-                    "organization_id" => $organization_id,
-                    "role_name" => $role_name,
-                    "config_role" => rtrim($config['url']['BASE_URL'], '/') . "/auth/organization"
-                ]
-            ]);*/
+            respond([
+                "status" => "redirect",
+                "redirect_url" => $config['url']['BASE_URL'] . '/auth/organization'
+            ]);
             exit;
     }
     
