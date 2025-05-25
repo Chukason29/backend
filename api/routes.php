@@ -5,10 +5,11 @@ require __DIR__ . '/../db.php';
 require_once "./functions.php";
 
 ob_end_clean();
-echo "This is the API routes file. Please refer to the documentation for usage.";
-/*
+
+
 $uri = rtrim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
 $method = $_SERVER['REQUEST_METHOD'];
+
 
 // Set CORS headers
 //header("Access-Control-Allow-Origin: http://127.0.0.1:3001");
@@ -17,8 +18,8 @@ header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 //file_put_contents('log.txt', "REQUEST_URI: " . $_SERVER['REQUEST_URI'] . PHP_EOL, FILE_APPEND);
-
-
+echo "This is the API routes file. Please refer to the documentation for usage.";
+/*
 // Handle OPTIONS preflight
 if ($method === 'OPTIONS') {
     http_response_code(200);
