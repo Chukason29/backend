@@ -125,7 +125,7 @@
                     "email" => $email,
                     "organization_id" => $organization_id,
                     "role_name" => $role_name,
-                    "config_role" => $config['url']['BASE_URL']
+                    "config_role" => rtrim($config['url']['BASE_URL'], '/') . "/auth/organization"
                 ]
             ]);
             exit;
