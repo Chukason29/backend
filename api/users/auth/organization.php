@@ -32,7 +32,7 @@
     $stmt->bindValue(':tier_name', $tier_name);
     $stmt->execute();
     $tier = $stmt->fetch(PDO::FETCH_ASSOC);
-    $tier_id = $tier['tier_id'];
+    $tier_id = $tier['id'];
     
 
     try {

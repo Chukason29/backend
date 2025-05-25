@@ -101,7 +101,6 @@ try {
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         profile_picture JSONB,
         position TEXT,
-        department TEXT,
         deleted_at TIMESTAMP,
         is_active BOOLEAN DEFAULT FALSE,
         is_deleted BOOLEAN DEFAULT FALSE,

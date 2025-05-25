@@ -1,6 +1,6 @@
 <?php
     session_start();
-    ob_end_clean();
+
     $data = json_decode(file_get_contents('php://input'), true);
    
     #TODO ==> Make sure email and password is inputted
