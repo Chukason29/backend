@@ -4,13 +4,6 @@
 use Ramsey\Uuid\Uuid;
 $data = json_decode(file_get_contents('php://input'), true);
 
-// Respond helper
-function respond($data, $code = 200) {
-    http_response_code($code);
-    header('Content-Type: application/json');
-    echo json_encode($data);
-    exit;
-}
 $uuid = Uuid::uuid4()->toString();
 
 if (!isset($data['tier_name'], $data['price'], $data['max_users'])) {

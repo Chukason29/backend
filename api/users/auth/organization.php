@@ -6,12 +6,7 @@
     $data = json_decode(file_get_contents('php://input'), true);
 
     // Respond helper
-    function respond($data, $code = 200) {
-        http_response_code($code);
-        header('Content-Type: application/json');
-        echo json_encode($data);
-        exit;
-    }
+
     #TODO ==> Make sure email and password is inputted
     if (!$_SESSION['user_id']) {
         respond(["status" => "error", 'message' => "unauthorized access"], 400);
