@@ -1,11 +1,12 @@
 <?php
 
-echo "This is the API routes file. Please refer to the documentation for usage.";
-/*require __DIR__ . '/../db.php';
+
+require __DIR__ . '/../db.php';
 require_once "./functions.php";
 
 ob_end_clean();
-
+echo "This is the API routes file. Please refer to the documentation for usage.";
+/*
 $uri = rtrim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
 $method = $_SERVER['REQUEST_METHOD'];
 
