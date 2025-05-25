@@ -3,6 +3,8 @@
     #TODO
     // JSON body
     $data = json_decode(file_get_contents('php://input'), true);
+    echo "login dey worry oo";
+    exit;
 
     // Respond helper
    
