@@ -37,11 +37,11 @@ respond(
         'message' => 'Login successful',
         'access_token' => $accessToken,
         'user' => [
-            'id' => $user['id'],
-            'name' => $user['name'],
-            'email' => $user['email'],
-            'role_id' => $user['role_id'],
-            'is_active' => $user['is_active']
+            'id' => $_SESSION['id'],
+            'name' => $_SESSION['name'],
+            'email' => $_SESSION['email'],
+            'role_id' => $_SESSION['role_id'],
+            'role_name' => $_SESSION['role_name']
         ]
     ],
     200
