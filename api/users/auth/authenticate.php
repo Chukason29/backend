@@ -35,9 +35,19 @@ if (!$isDev) {
 
 
 try {
+    $check = $pdo->prepare("SELECT * FROM refresh_tokens WHERE user_id = ?");
+    $check->execute([$_SESSION['user_id']]);
+    $existingToken = $check->fetch(PDO::FETCH_ASSOC);
+
     $pdo->beginTransaction();
-    $stmt = $pdo->prepare("INSERT INTO refresh_tokens (token, user_id, expires_at) VALUES (?, ?, ?)");
-    $stmt->execute([$refreshToken, $_SESSION['user_id'], $refreshExpiry]);
+    if (!$existingToken) {
+        $stmt = $pdo->prepare("INSERT INTO refresh_tokens (token, user_id, expires_at) VALUES (?, ?, ?)");
+        $stmt->execute([$refreshToken, $_SESSION['user_id'], $refreshExpiry]);
+    } else {
+        $stmt = $pdo->prepare("UPDATE refresh_tokens SET token = ?, expires_at = ? WHERE user_id = ?");
+        $stmt->execute([$refreshToken, $refreshExpiry, $_SESSION['user_id']]);
+    }
+    
     $pdo->commit();
 } catch (PDOException $e) {
     $pdo->rollBack();
@@ -58,7 +68,6 @@ $response = [
         'id' => $_SESSION['user_id'],
         'name' => $_SESSION['name'],
         'email' => $_SESSION['email'],
-        'role_id' => $_SESSION['role_id'],
         'role_name' => $_SESSION['role_name']
     ]
 ];

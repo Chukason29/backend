@@ -33,16 +33,44 @@ try {
     $tokenRow = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$tokenRow || strtotime($tokenRow['expires_at']) < time()) {
-        respond(['status' => 'error', 'message' => 'Invalid or expired refresh token'], 401);
+        respond([
+            'status' => 'redirect', 
+            "redirect_url" => $config['url']['BASE_URL'] . '/login?error=invalid_token']
+            , 401);
     }
 
     // 3️⃣ Issue new access token
-    $jwtSecret = $_ENV['JWT_SECRET'];
+    $jwtSecret = $config['secret']['SECRET_KEY'];
     $newAccessToken = generateAccessToken($tokenRow['user_id'], $jwtSecret);
+
+    #getting user details
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE user_id = ?");
+    $stmt->execute([$tokenRow['user_id']]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$user) {
+        respond(['status' => 'error', 'message' => 'User not found'], 404);
+    }
+
+    #Getting the role name from the roles table for the user
+    $stmt = $pdo->prepare("SELECT * FROM roles WHERE id = :role_id");
+    $stmt->bindValue(':role_id', $user['role_id']);
+    $stmt->execute();
+    $role = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$role) {
+        respond(["status" => "error", 'message' => 'Role not found'], 500);
+        exit;
+    }
 
     respond([
         'status' => 'success',
-        'access_token' => $newAccessToken
+        'access_token' => $newAccessToken,
+        'user' => [
+            'id' => $user['user_id'],
+            'name' => $user['name'] ?? null,
+            'email' => $user['email'] ?? null,
+            'role_name' => $role['role_name'] ?? null,
+            'organization_id' => $user['organization_id'] ?? null
+        ]
     ]);
 } catch (PDOException $e) {
     respond(['status' => 'error', 'message' => 'Database error: ' . $e->getMessage()], 500);
