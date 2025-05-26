@@ -65,7 +65,7 @@ try {
         'status' => 'success',
         'access_token' => $newAccessToken,
         'user' => [
-            'id' => $user['user_id'],
+            'id' => $user['id'],
             'name' => $user['name'] ?? null,
             'email' => $user['email'] ?? null,
             'role_name' => $role['role_name'] ?? null,
