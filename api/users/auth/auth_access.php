@@ -44,7 +44,7 @@ try {
     $newAccessToken = generateAccessToken($tokenRow['user_id'], $jwtSecret);
 
     #getting user details
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE user_id = ?");
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
     $stmt->execute([$tokenRow['user_id']]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
     if (!$user) {
