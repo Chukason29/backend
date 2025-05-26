@@ -40,6 +40,9 @@ try {
     if ($method === 'POST' && $uri === '/api/test') {
         require_once __DIR__ . '/users/auth/test.php';
     }
+    if ($method === 'POST' && $uri === '/api/auth/auth_access') {
+        require_once __DIR__ . '/users/auth/auth_access.php';
+    }
     if ($method === 'GET' && $uri === '/api/verify') {
         $verify_token = $_GET['token'] ?? null;
         if (empty($verify_token)) {
@@ -70,7 +73,7 @@ try {
     }
 
     // Fallback
-    respond(['error' => 'Route not found'], 404);
+    respond(["status" =>"error", "message" => "Route not found"], 404);
 
 } catch (PDOException $e) {
     respond(['error' => $e->getMessage()], 500);
