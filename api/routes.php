@@ -40,7 +40,7 @@ try {
     if ($method === 'POST' && $uri === '/api/test') {
         require_once __DIR__ . '/users/auth/test.php';
     }
-    if ($method === 'POST' && $uri === '/api/auth/auth_access') {
+    if ($method === 'POST' && $uri === '/api/auth_access') {
         require_once __DIR__ . '/users/auth/auth_access.php';
     }
     if ($method === 'GET' && $uri === '/api/verify') {
