@@ -124,4 +124,7 @@ return [
     'roles' => [
         'ORGANIZATION_ADMIN' => $_ENV['ORGANIZATION_ADMIN'] ?? null,
     ],
+    'environment' => [
+        'environment' => $_ENV['ENVIRONMENT'] ?? null,
+    ],
 ];

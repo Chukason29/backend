@@ -158,7 +158,7 @@ function sendHTMLEmail($toEmail, $toName, $verificationLink, $myTemplate, $email
     }
 }
 
-function generateAccessToken($userId, $secret, $expiresIn = 900) {
+function generateAccessToken($userId, $secret, $expiresIn = 3600) {
     $issuedAt = time();
     $payload = [
         'iss' => 'trendsaf-api',
