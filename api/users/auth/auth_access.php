@@ -3,43 +3,47 @@
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
-header("Access-Control-Allow-Origin: http://localhost:3001");
-header("Access-Control-Allow-Credentials: true");
-header("Access-Control-Allow-Methods: POST");
-header("Access-Control-Allow-Headers: Content-Type");
+$isDev = ($config['environment']['environment'] === 'development');
+$refreshToken = null;
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['error' => 'Method Not Allowed']);
-    exit;
+if ($isDev) {
+    // Dev: read from JSON body or Authorization header
+    $input = json_decode(file_get_contents("php://input"), true);
+    $refreshToken = $input['refresh_token'] ?? null;
+
+    if (!$refreshToken && isset($_SERVER['HTTP_AUTHORIZATION'])) {
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'];
+        if (str_starts_with($authHeader, 'Bearer ')) {
+            $refreshToken = substr($authHeader, 7);
+        }
+    }
+} else {
+    // Prod: read from HttpOnly cookie
+    $refreshToken = $_COOKIE['refresh_token'] ?? null;
 }
 
-$refreshToken = $_COOKIE['refresh_token'] ?? null;
 if (!$refreshToken) {
-    http_response_code(401);
-    echo json_encode(['error' => 'Refresh token missing']);
-    exit;
+    respond(['status' => 'error', 'message' => 'No refresh token provided'], 401);
 }
 
+// 2️⃣ Check database
 try {
-    $stmt = $pdo->prepare("SELECT user_id, expires_at FROM refresh_tokens WHERE token = ? AND is_used = FALSE");
+    $stmt = $pdo->prepare("SELECT user_id, expires_at FROM refresh_tokens WHERE token = ?");
     $stmt->execute([$refreshToken]);
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $tokenRow = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if (!$row || strtotime($row['expires_at']) < time()) {
-        http_response_code(401);
-        echo json_encode(['error' => 'Invalid or expired refresh token']);
-        exit;
+    if (!$tokenRow || strtotime($tokenRow['expires_at']) < time()) {
+        respond(['status' => 'error', 'message' => 'Invalid or expired refresh token'], 401);
     }
 
-    $userId = $row['user_id'];
-    $accessToken = generateAccessToken($userId, $_ENV['SECRET_KEY']);
+    // 3️⃣ Issue new access token
+    $jwtSecret = $_ENV['JWT_SECRET'];
+    $newAccessToken = generateAccessToken($tokenRow['user_id'], $jwtSecret);
 
-    echo json_encode([
-        'access_token' => $accessToken,
-        'user_id' => $userId
+    respond([
+        'status' => 'success',
+        'access_token' => $newAccessToken
     ]);
-} catch (PDOException $e){
-    http_response_code(500);
-    echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
+} catch (PDOException $e) {
+    respond(['status' => 'error', 'message' => 'Database error: ' . $e->getMessage()], 500);
 }
