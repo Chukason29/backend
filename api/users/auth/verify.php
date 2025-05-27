@@ -16,11 +16,11 @@
 
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        if (!$result["token"] || $result["token"] !== $verify_token) {
+        /*if (!$result["token"] || $result["token"] !== $verify_token) {
              //respond(["status" => "error", "message"=> "invalid token","redirect_url" => $config['url']['BASE_URL'] . "/auth/verify/?token=" . $verify_token], 200);
              header("Location: " . $config['url']['BASE_URL'] . "/auth/verify/?status=error&message=invalid token?token=" . $verify_token);
             exit;
-        }
+        }*/
         if ($result["is_used"] === TRUE) {
              //respond(["status" => "error", "message"=> "invalid token","redirect_url" => $config['url']['BASE_URL'] . "/auth/verify/?token=" . $verify_token], 200);
             header("Location: " . $config['url']['BASE_URL'] . "/auth/verify/?status=error&message=link already used?token=" . $verify_token);
