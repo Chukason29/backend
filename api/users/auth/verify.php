@@ -56,13 +56,19 @@
             exit;
         }
     } catch (PDOException $e) {
-        $pdo->rollBack();
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
         respond(["status" => "error", 'message' => 'Database error: ' . $e->getMessage()], 500);
     } catch (Exception $e) {
-        $pdo->rollBack();
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
         respond(["status" => "error", 'message' => 'Error: ' . $e->getMessage()], 500);
-    } catch (\Throwable $th) {
-        $pdo->rollBack();
+    } catch (\Throwable $e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
         respond(["status" => "error", 'message' => 'Error: ' . $e->getMessage()], 500);
     }
     
