@@ -48,11 +48,11 @@
     // Commit transaction
         if ($pdo->commit()) {
             // Redirect to the verification success page
-            response(["status" => "redirect", "redirect_url" => $config['url']['BASE_URL'] . "/auth/verify/token"], 200);
+            respond(["status" => "redirect", "redirect_url" => $config['url']['BASE_URL'] . "/auth/verify/token"], 200);
             exit;
         }else{
             // Redirect to the verification success page
-            response(["status" => "redirect", "redirect_url" => $config['url']['BASE_URL'] . "/auth/verify/token"], 200);
+            respond(["status" => "redirect", "redirect_url" => $config['url']['BASE_URL'] . "/auth/verify/token"], 200);
             exit;
         }
     } catch (PDOException $e) {
