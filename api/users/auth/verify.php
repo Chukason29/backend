@@ -23,8 +23,12 @@
         }*/
         if ($result["is_used"] === TRUE) {
              //respond(["status" => "error", "message"=> "invalid token","redirect_url" => $config['url']['BASE_URL'] . "/auth/verify/?token=" . $verify_token], 200);
-            header("Location: " . $config['url']['BASE_URL'] . "/auth/verify/?status=error&message=link already used&token=" . $verify_token);
-             exit;
+            #header("Location: " . $config['url']['BASE_URL'] . "/auth/verify/?status=error&message=link already used&token=" . $verify_token);
+            respond([
+                "status" => "error",
+                "message" => "link already used",
+            ]);
+            exit;
         }
     } catch (PDOException $e) {
         respond(["status" => "error", 'message' => 'Database error: ' . $e->getMessage()], 500);
@@ -53,14 +57,18 @@
         
     // Commit transaction
         if ($pdo->commit()) {
-            // Redirect to the verification success page
-            
-            
-            header("Location: " . $config['url']['BASE_URL'] . "/auth/verify/?status=success&message=verification successful&token=" . $verify_token);#respond(["status" => "success", "message"=> "verification successful","redirect_url" => $config['url']['BASE_URL'] . "/auth/verify/?token=" . $verify_token], 200);
+            // Response to the verification success page 
+            respond([
+                "status" => "success",
+                "message" => "verification successful"
+            ]);
             exit;
         }else{
-            // Redirect to the verification success page
-            header("Location: " . $config['url']['BASE_URL'] . "/auth/verify/?status=error&message=verification failed&token=" . $verify_token);
+            // Response to the verification success page
+            respond([
+                "status" => "error",
+                "message" => "verification not successful"
+            ]);
             exit;
         }
     } catch (PDOException $e) {

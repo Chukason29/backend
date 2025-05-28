@@ -94,7 +94,7 @@
         #TODO ==> If the user is not an organization admin, redirect to the role password reset page
         response([
             "status" => "redirect", 
-            "redirect_url" => $config['url']['BASE_URL'] . '/auth/role-password-reset?token='.$token
+            "redirect_url" => $config['url']['BASE_URL'] . '/auth/update_password?token='.$token
         ]);
         exit;
     }
