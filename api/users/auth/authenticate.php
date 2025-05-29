@@ -20,7 +20,7 @@ $accessToken = generateAccessToken($encrypted_user_id, $_SESSION['role_name'], $
 
 #generate refresh token
 $refreshToken = generateRefreshToken();
-$refreshExpiry = time() + (60 * 60 * 24 * 30); // 30 days
+$refreshExpiry = date('Y-m-d H:i:s', time() + 60 * 60 * 24 * 30); // 30 days
 
 $isDev = ($config['environment']['environment'] === 'development');
 
@@ -30,7 +30,8 @@ if (!$isDev) {
         'refresh_token',
         $refreshToken,
         [
-            'expires' => $refreshExpiry,
+            'expires' => time() + 60 * 60 * 24 * 30, // 30 days
+            'domain' => "basefood.trendsaf.co",
             'path' => '/',
             'httponly' => true,
             'secure' => true, // Must be HTTPS
