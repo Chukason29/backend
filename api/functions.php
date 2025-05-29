@@ -186,6 +186,18 @@ function generateAccessToken($userId, $role, $name, $email, $organization_id, $s
     ];
     return JWT::encode($payload, $secret, 'HS256');
 }
+function decodeAccessToken($accessToken, $secretKey) {
+    try {
+        // Decode and return the payload as an object
+        return JWT::decode($accessToken, new Key($secretKey, 'HS256'));
+    } catch (SignatureInvalidException $e) {
+        // Invalid signature
+        return ['status' =>"error", "message" => 'Invalid token signature'];
+    } catch (Exception $e) {
+        // Any other error
+        return ["status" => "error", "message" => 'Token decoding failed: ' . $e->getMessage()];
+    }
+}
 function generateRefreshToken() {
     return bin2hex(random_bytes(64)); // 128 chars hex string
 }
@@ -218,18 +230,6 @@ function getRefreshTokenFromCookie() {
     return null; // No refresh token found
 }
 
-function decodeAccessToken($accessToken, $secretKey) {
-    try {
-        // Decode and return the payload as an object
-        return JWT::decode($accessToken, new Key($secretKey, 'HS256'));
-    } catch (SignatureInvalidException $e) {
-        // Invalid signature
-        return ['status' =>"error", "message" => 'Invalid token signature'];
-    } catch (Exception $e) {
-        // Any other error
-        return ["status" => "error", "message" => 'Token decoding failed: ' . $e->getMessage()];
-    }
-}
 
 
 
