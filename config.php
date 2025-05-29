@@ -13,7 +13,7 @@ session_set_cookie_params([
     'domain' => 'basefood.trendsaf.co', // Set your domain explicitly
     'secure' => true,  // Ensures cookie only sent over HTTPS
     'httponly' => true,     // JS can't access the cookie
-    'samesite' => 'Srict',    // Helps prevent CSRF (use 'Strict' for tighter security)
+    'samesite' => 'Strict',    // Helps prevent CSRF (use 'Strict' for tighter security)
 ]);
 
 ini_set('session.use_strict_mode', 1);        // Reject uninitialized session IDs
