@@ -3,6 +3,7 @@
 
 require __DIR__ . '/../db.php';
 require_once "./functions.php";
+require_once __DIR__ . '/users/permissions.php';
 
 ob_end_clean();
 
@@ -55,6 +56,14 @@ try {
         require_once __DIR__ . '/users/auth/login.php';
         exit;
     }
+    if ($method === 'POST' && $uri === '/api/users/add') {
+        require_once __DIR__ . '/users/org_admin/add_user.php';
+        exit;
+    }
+
+
+
+
     if ($method === 'POST' && $uri === '/api/roles') {
         require_once __DIR__ . '/super_admin/add_roles.php';
         exit;

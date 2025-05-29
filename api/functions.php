@@ -157,20 +157,81 @@ function sendHTMLEmail($toEmail, $toName, $verificationLink, $myTemplate, $email
         return "Error: {$mail->ErrorInfo}";
     }
 }
+function encryptUserId($userId, $encryptionKey) {
+    $iv = random_bytes(16); // Initialization Vector
+    $encrypted = openssl_encrypt($userId, 'AES-256-CBC', $encryptionKey, 0, $iv);
+    return base64_encode($iv . $encrypted); // Store IV + ciphertext
+}
 
-function generateAccessToken($userId, $secret, $expiresIn = 3600) {
+function decryptUserId($encryptedValue, $encryptionKey) {
+    $data = base64_decode($encryptedValue);
+    $iv = substr($data, 0, 16);
+    $ciphertext = substr($data, 16);
+    return openssl_decrypt($ciphertext, 'AES-256-CBC', $encryptionKey, 0, $iv);
+}
+
+function generateAccessToken($userId, $role, $name, $email, $organization_id, $secret, $expiresIn = 3600) {
     $issuedAt = time();
     $payload = [
         'iss' => 'trendsaf-api',
         'iat' => $issuedAt,
         'exp' => $issuedAt + $expiresIn,
-        'sub' => $userId
+        'sub' => $userId,
+        'user' => [
+            'role' => $role,
+            'name' => $name,
+            'email' => $email,
+            'organization_id' => $organization_id
+        ]
     ];
     return JWT::encode($payload, $secret, 'HS256');
 }
 function generateRefreshToken() {
     return bin2hex(random_bytes(64)); // 128 chars hex string
 }
+
+function getBearerToken() {
+    $headers = null;
+
+    if (isset($_SERVER['Authorization'])) {
+        $headers = trim($_SERVER["Authorization"]);
+    } elseif (isset($_SERVER['HTTP_AUTHORIZATION'])) { // Nginx or fast CGI
+        $headers = trim($_SERVER["HTTP_AUTHORIZATION"]);
+    } elseif (function_exists('apache_request_headers')) {
+        $requestHeaders = apache_request_headers();
+        if (isset($requestHeaders['Authorization'])) {
+            $headers = trim($requestHeaders['Authorization']);
+        }
+    }
+
+    // Check if Bearer token is present
+    if (!empty($headers) && preg_match('/Bearer\s(\S+)/', $headers, $matches)) {
+        return $matches[1];
+    }
+
+    return null; // No token found
+}
+function getRefreshTokenFromCookie() {
+    if (isset($_COOKIE['refresh_token']) && !empty($_COOKIE['refresh_token'])) {
+        return $_COOKIE['refresh_token'];
+    }
+    return null; // No refresh token found
+}
+
+function decodeAccessToken($accessToken, $secretKey) {
+    try {
+        // Decode and return the payload as an object
+        return JWT::decode($accessToken, new Key($secretKey, 'HS256'));
+    } catch (SignatureInvalidException $e) {
+        // Invalid signature
+        return ['status' =>"error", "message" => 'Invalid token signature'];
+    } catch (Exception $e) {
+        // Any other error
+        return ["status" => "error", "message" => 'Token decoding failed: ' . $e->getMessage()];
+    }
+}
+
+
 
 /*function investmentEmail($toEmail, $toName, $invoice_number, $product_name, $investment_amount, $expected_returns, $start_date, $one_year_later, $payment_ref, $myTemplate) {
     require __DIR__ . '/PHPMailer/src/PHPMailer.php';

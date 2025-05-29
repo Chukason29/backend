@@ -11,8 +11,14 @@ if (!$user_id) {
 }
 
 // JWT config
-$jwt_secret = $config['secret']['SECRET_KEY'];  
-$accessToken = generateAccessToken($user_id, $jwt_secret);
+$jwt_secret = $config['secret']['SECRET_KEY'];
+$encryptionKey = $config['secret']['ENCRYPTION_KEY'];
+$encrypted_user_id = encryptUserId($user_id, $encryptionKey);
+
+#generate access token
+$accessToken = generateAccessToken($encrypted_user_id, $_SESSION['role_name'], $_SESSION['name'], $_SESSION['email'], $_SESSION['organization_id'], $jwt_secret);
+
+#generate refresh token
 $refreshToken = generateRefreshToken();
 $refreshExpiry = date('Y-m-d H:i:s', time() + 60 * 60 * 24 * 30); // 30 days
 
@@ -63,13 +69,7 @@ $_SESSION['$accessToken'] = $accessToken;
 $response = [
     'status' => 'success',
     'message' => 'Login successful',
-    'access_token' => $accessToken,
-    'user' => [
-        'id' => $_SESSION['user_id'],
-        'name' => $_SESSION['name'],
-        'email' => $_SESSION['email'],
-        'role_name' => $_SESSION['role_name']
-    ]
+    'access_token' => $accessToken
 ];
 
 // If in development mode, include the refresh token in the response

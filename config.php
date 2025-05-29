@@ -58,6 +58,8 @@ return [
 
     'secret' => [
         'SECRET_KEY' => $_ENV['SECRET_KEY']     ?? null,
+        'ENCRYPTION_KEY' => $_ENV['ENCRYPTION_KEY'] ?? null,
+        'ENCRYPTION_ALGO' => $_ENV['ENCRYPTION_ALGO'] ?? 'aes-256-cbc'
     ],
 
     //
