@@ -8,3 +8,4 @@ $access_token = getBearerToken();
 if (!$access_token) {
     respond(['status' => 'error', 'message' => 'Access token is required'], 401);
 }
+respond(['status' => 'success', 'token' => $access_token], 401);
