@@ -20,7 +20,7 @@ $accessToken = generateAccessToken($encrypted_user_id, $_SESSION['role_name'], $
 
 #generate refresh token
 $refreshToken = generateRefreshToken();
-$refreshExpiry = date('Y-m-d H:i:s', time() + 60 * 60 * 24 * 30); // 30 days
+$refreshExpiry = time() + (60 * 60 * 24 * 30); // 30 days
 
 $isDev = ($config['environment']['environment'] === 'development');
 
@@ -63,7 +63,7 @@ try {
 }
 
 
-$_SESSION['$accessToken'] = $accessToken;
+$_SESSION['access_token'] = $accessToken;
 
 #preparing the response
 $response = [

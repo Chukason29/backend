@@ -7,6 +7,19 @@ if (file_exists(__DIR__ . '/.env')) {
     (Dotenv\Dotenv::createImmutable(__DIR__))->load(); // using load() for strict behavior
 }
 
+session_set_cookie_params([
+    'lifetime' => 3600, // Expires on browser close (or use custom time)
+    'path' => '/',
+    'domain' => 'basefood.trendsaf.co', // Set your domain explicitly
+    'secure' => true,  // Ensures cookie only sent over HTTPS
+    'httponly' => true,     // JS can't access the cookie
+    'samesite' => 'Srict',    // Helps prevent CSRF (use 'Strict' for tighter security)
+]);
+
+ini_set('session.use_strict_mode', 1);        // Reject uninitialized session IDs
+ini_set('session.use_only_cookies', 1);       // Prevent session IDs in URLs
+ini_set('session.cookie_secure', 1);          // Force HTTPS
+ini_set('session.cookie_httponly', 1);        // Prevent JS access
 
 return [
     //
