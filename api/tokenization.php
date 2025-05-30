@@ -16,3 +16,15 @@ $decoded_token = decodeAccessToken($access_token, $jwt_secret);
 if (!$decoded_token) {
     respond(['status' => 'error', 'message' => 'Invalid access token'], 401);
 }
+
+$user_id = decryptUserId($decoded_token->sub, $encryptionKey);
+$email = $decoded_token->user->email;
+$organization_id = $decoded_token->user->organization_id ?? null;
+$role_name = $decoded_token->user->role_name;
+
+
+#Check if the user has access to the requested resource
+#This function is from permissions.php
+ if (!hasAccess($role_name, $uri, $roles)) {
+    respond(['status' => 'error', 'message' => 'Unauthorized access'], 403);
+ }
