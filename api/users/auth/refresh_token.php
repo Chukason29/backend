@@ -28,7 +28,7 @@ try {
     $encrypted_user_id = encryptUserId($tokenRow['user_id'], $encryptionKey);
 
     #generate access token
-    $newAccessToken = generateAccessToken($encrypted_user_id, $_SESSION['role_name'], $_SESSION['email'], $email, $organization_id, $secret, $expiresIn = 3600 * 12);
+    $newAccessToken = generateAccessToken($encrypted_user_id, $_SESSION['role_name'], $_SESSION['email'], $email, $organization_id, $jwtSecret, $expiresIn = 3600 * 12);
     #getting user details           
 
     respond([
