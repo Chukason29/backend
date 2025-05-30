@@ -188,20 +188,19 @@ function generateAccessToken($userId, $role, $name, $email, $organization_id, $s
 }
 function decodeAccessToken($accessToken, $secretKey) {
     try {
-        // Decode and return the payload as an object
         return JWT::decode($accessToken, new Key($secretKey, 'HS256'));
-    } catch (SignatureInvalidException $e) {
-        // Invalid signature
-        respond(["status" => "error", "message" => 'Invalid token signature'], 400);
-        exit;
     } catch (ExpiredException $e) {
         respond(["status" => "error", "message" => 'Token has expired'], 401);
-        exit;
+    } catch (SignatureInvalidException $e) {
+        respond(["status" => "error", "message" => 'Invalid token signature'], 400);
     } catch (Exception $e) {
-        // Any other error
-        respond (["status" => "error", "message" => 'Token decoding failed: ' . $e->getMessage()]);
+        respond(["status" => "error", "message" => 'Token decoding failed: ' . $e->getMessage()], 400);
+    } catch (Throwable $e) {
+        // Catch anything else (e.g., type errors)
+        respond(["status" => "error", "message" => 'Unexpected error: ' . $e->getMessage()], 500);
     }
 }
+
 
 function generateRefreshToken() {
     return bin2hex(random_bytes(64)); // 128 chars hex string
