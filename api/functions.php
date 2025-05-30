@@ -197,7 +197,7 @@ function decodeAccessToken($accessToken, $secretKey) {
         respond(["status" => "error", "message" => 'Token decoding failed: ' . $e->getMessage()], 400);
     } catch (Throwable $e) {
         // Catch anything else (e.g., type errors)
-        respond(["status" => "error", "message" => 'Unexpected error: ' . $e->getMessage()], 500);
+        respond(["status" => "error", "message" => $e->getMessage()], 500);
     }
 }
 
