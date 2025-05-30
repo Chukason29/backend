@@ -60,7 +60,7 @@ try {
         require_once __DIR__ . '/users/org_admin/add_user.php';
         exit;
     }
-    if ($method === 'POST' && $uri === '/api/auth/refresh_token') {
+    if ($method === 'POST' && $uri === '/api/refresh_token') {
         require_once __DIR__ . '/users/auth/refresh_token.php';
         exit;
     }
