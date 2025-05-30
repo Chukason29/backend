@@ -15,8 +15,4 @@ if (!$access_token) {
 $decoded_token = decodeAccessToken($access_token, $jwt_secret);
 if (!$decoded_token) {
     respond(['status' => 'error', 'message' => 'Invalid access token'], 401);
-}elseif ($decoded_token["code"] === 401) { // Check if the token is expired
-    respond(['status' => 'error', 'message' => 'Expired Access Token'], 401);
-    exit;
-    # code...
 }
