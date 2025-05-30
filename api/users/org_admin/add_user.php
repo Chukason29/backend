@@ -1,7 +1,7 @@
 <?php
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-use Firebase\JWT\ExpiredException;
+//use Firebase\JWT\ExpiredException;
 use Firebase\JWT\SignatureInvalidException;
 
 $jwt_secret = $config['secret']['SECRET_KEY'];
