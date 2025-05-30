@@ -11,7 +11,7 @@ session_set_cookie_params([
     'lifetime' => 3600, // Expires on browser close (or use custom time)
     'path' => '/',
     'domain' => 'basefood.trendsaf.co', // Set your domain explicitly
-    'secure' => False,  // Ensures cookie only sent over HTTPS
+    'secure' => true,  // Ensures cookie only sent over HTTPS
     'httponly' => False,     // JS can't access the cookie
     'samesite' => 'None',    // Helps prevent CSRF (use 'Strict' for tighter security)
 ]);
