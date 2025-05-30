@@ -192,7 +192,7 @@ function decodeAccessToken($accessToken, $secretKey) {
         return JWT::decode($accessToken, new Key($secretKey, 'HS256'));
     } catch (SignatureInvalidException $e) {
         // Invalid signature
-        return ['status' =>"error", "message" => 'Invalid token signature'];
+        return ['status' =>"error", "message" => 'Invalid token signature', "code" => 400];
     } catch (ExpiredException $e) {
         // Token has expired
         return ['status' =>"error", "message" => 'Token has expired', "code" => 401];
