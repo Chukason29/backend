@@ -34,7 +34,8 @@ try {
 
     if (!$tokenRow || strtotime($tokenRow['expires_at']) < time()) {
         respond([
-            'status' => 'redirect', 
+            'status' => 'error',
+            'message' => 'Invalid or expired refresh token', 
             "redirect_url" => $config['url']['BASE_URL'] . '/login?error=invalid_token']
             , 401);
     }

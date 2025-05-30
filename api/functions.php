@@ -170,7 +170,7 @@ function decryptUserId($encryptedValue, $encryptionKey) {
     return openssl_decrypt($ciphertext, 'AES-256-CBC', $encryptionKey, 0, $iv);
 }
 
-function generateAccessToken($userId, $role, $name, $email, $organization_id, $secret, $expiresIn = 3600) {
+function generateAccessToken($userId, $role, $name, $email, $organization_id, $secret, $expiresIn = 3600 * 12) {
     $issuedAt = time();
     $payload = [
         'iss' => 'trendsaf-api',
@@ -193,6 +193,9 @@ function decodeAccessToken($accessToken, $secretKey) {
     } catch (SignatureInvalidException $e) {
         // Invalid signature
         return ['status' =>"error", "message" => 'Invalid token signature'];
+    } catch (ExpiredException $e) {
+        // Token has expired
+        return ['status' =>"error", "message" => 'Token has expired', "code" => 401];
     } catch (Exception $e) {
         // Any other error
         return ["status" => "error", "message" => 'Token decoding failed: ' . $e->getMessage()];
