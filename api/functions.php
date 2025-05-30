@@ -170,7 +170,7 @@ function decryptUserId($encryptedValue, $encryptionKey) {
     return openssl_decrypt($ciphertext, 'AES-256-CBC', $encryptionKey, 0, $iv);
 }
 
-function generateAccessToken($userId, $role, $name, $email, $organization_id, $secret, $expiresIn = 3600 * 12) {
+function generateAccessToken($userId, $role, $name, $email, $organization_id, $secret, $expiresIn = 120) {
     $issuedAt = time();
     $payload = [
         'iss' => 'trendsaf-api',
