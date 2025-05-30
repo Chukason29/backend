@@ -6,7 +6,7 @@ use Firebase\JWT\Key;
 $isDev = ($config['environment']['environment'] === 'development');
 $refreshToken = null;
 
-if ($isDev) {
+/*if ($isDev) {
     // Dev: read from JSON body or Authorization header
     $input = json_decode(file_get_contents("php://input"), true);
     $refreshToken = $input['refresh_token'] ?? null;
@@ -20,8 +20,8 @@ if ($isDev) {
 } else {
     // Prod: read from HttpOnly cookie
     $refreshToken = $_COOKIE['refresh_token'] ?? null;
-}
-
+}*/
+$refreshToken = $_COOKIE['refresh_token'] ?? null;
 if (!$refreshToken) {
     respond(['status' => 'error', 'message' => 'No refresh token provided'], 401);
 }
