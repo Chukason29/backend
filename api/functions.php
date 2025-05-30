@@ -106,7 +106,6 @@ function getEmailFromToken($token) {
 
     return $payload['email']; // Return the email if valid
 }
-
 function emailVerifyMessage($imageLink, $message){
     return [
         "image-link" => $imageLink,
@@ -157,6 +156,7 @@ function sendHTMLEmail($toEmail, $toName, $verificationLink, $myTemplate, $email
         return "Error: {$mail->ErrorInfo}";
     }
 }
+
 function encryptUserId($userId, $encryptionKey) {
     $iv = random_bytes(16); // Initialization Vector
     $encrypted = openssl_encrypt($userId, 'AES-256-CBC', $encryptionKey, 0, $iv);
@@ -192,15 +192,17 @@ function decodeAccessToken($accessToken, $secretKey) {
         return JWT::decode($accessToken, new Key($secretKey, 'HS256'));
     } catch (SignatureInvalidException $e) {
         // Invalid signature
-        return ['status' =>"error", "message" => 'Invalid token signature', "code" => 400];
+        respond(["status" => "error", "message" => 'Invalid token signature'], 400);
+        exit;
     } catch (ExpiredException $e) {
-        // Token has expired
-        return ['status' =>"error", "message" => 'Token has expired', "code" => 401];
+        respond(["status" => "error", "message" => 'Token has expired'], 401);
+        exit;
     } catch (Exception $e) {
         // Any other error
-        return ["status" => "error", "message" => 'Token decoding failed: ' . $e->getMessage()];
+        respond (["status" => "error", "message" => 'Token decoding failed: ' . $e->getMessage()]);
     }
 }
+
 function generateRefreshToken() {
     return bin2hex(random_bytes(64)); // 128 chars hex string
 }
