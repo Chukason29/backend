@@ -5,6 +5,8 @@
     
     #TODO ==> check if the token is valid and not expired
     $email = getEmailFromToken($verify_token);
+    respond(['message' => $email], 400);
+    exit;
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         respond(["status" => "error", 'message' => 'Invalid link or link expired'], 400);
@@ -87,4 +89,3 @@
         }
         respond(["status" => "error", 'message' => 'Error: ' . $e->getMessage()], 500);
     }
-    

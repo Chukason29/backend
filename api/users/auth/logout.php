@@ -24,7 +24,7 @@ session_unset();
 session_destroy();
 
 // 4️⃣ Expire cookie
-setcookie('refresh_token', '', time() - 3600, '/', '', true, true);
+setcookie('refresh_token', '', time() - (60 * 60 * 24 * 30), '/', '', true, true);
 
 // 5️⃣ Respond
 respond(['status' => 'success', 'message' => 'Logged out successfully'], 200);
