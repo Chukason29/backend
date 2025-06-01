@@ -35,7 +35,7 @@ if (!$isDev) {
             'path' => '/',
             'httponly' => true,
             'secure' => true, // Must be HTTPS
-            'samesite' => 'Lax'
+            'samesite' => 'None' // Allows cross-site requests
         ]
     );
 }

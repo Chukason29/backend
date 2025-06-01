@@ -69,7 +69,7 @@ try {
     CREATE TABLE IF NOT EXISTS organizations (
         id UUID PRIMARY KEY,
         name TEXT NOT NULL,
-        billing_email VARCHAR(255) UNIQUE,
+        billing_email VARCHAR(255),
         billing_address TEXT,
         phone VARCHAR(50),
         website TEXT,

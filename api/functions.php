@@ -21,6 +21,7 @@ function emailExists($pdo, $email) {
     $stmt->execute([$email]);
     return $stmt->fetchColumn() ? true : false;
 }
+
 function phoneExists($pdo, $phone) {
     $stmt = $pdo->prepare("SELECT 1 FROM users WHERE phone = ? LIMIT 1"); // Fast check
     $stmt->execute([$phone]);

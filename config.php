@@ -12,14 +12,14 @@ session_set_cookie_params([
     'path' => '/',
     'domain' => 'basefood.trendsaf.co', // Set your domain explicitly
     'secure' => true,  // Ensures cookie only sent over HTTPS
-    'httponly' => False,     // JS can't access the cookie
+    'httponly' => true,     // JS can't access the cookie
     'samesite' => 'None',    // Helps prevent CSRF (use 'Strict' for tighter security)
 ]);
 
-ini_set('session.use_strict_mode', 1);        // Reject uninitialized session IDs
+/*ini_set('session.use_strict_mode', 1);        // Reject uninitialized session IDs
 ini_set('session.use_only_cookies', 1);       // Prevent session IDs in URLs
 ini_set('session.cookie_secure', 1);          // Force HTTPS
-ini_set('session.cookie_httponly', 1);        // Prevent JS access
+ini_set('session.cookie_httponly', 1);        // Prevent JS access*/
 
 return [
     //
