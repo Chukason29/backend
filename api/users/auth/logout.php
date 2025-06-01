@@ -1,7 +1,4 @@
 <?php
-require_once __DIR__ . '/../../db.php';
-require_once __DIR__ . '/../helpers/respond.php';
-
 session_start();
 
 // 1️⃣ Get refresh token (cookie or dev header/body)
