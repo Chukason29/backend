@@ -56,6 +56,11 @@ try {
         require_once __DIR__ . '/users/auth/login.php';
         exit;
     }
+    if ($method === 'POST' && $uri === '/api/logout') {
+        require_once __DIR__ . '/users/auth/logout.php';
+        exit;
+    }
+    
     if ($method === 'POST' && $uri === '/api/users/add') {
         require_once __DIR__ . '/users/org_admin/add_user.php';
         exit;
