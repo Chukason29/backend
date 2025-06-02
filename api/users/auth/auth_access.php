@@ -60,7 +60,7 @@ try {
         respond(["status" => "error", 'message' => 'Role not found'], 500);
         exit;
     }
-    $newAccessToken = generateAccessToken($user['id'], $role["role_name"], $user["name"], $user["email"], $user["organization_id"], $secret, $expiresIn = 3660 * 3);
+    $newAccessToken = generateAccessToken($user['id'], $role["role_name"], $user["name"], $user["email"], $user["organization_id"], $jwtSecret, $expiresIn = 3660 * 3);
 
     respond([
         'status' => 'success',
