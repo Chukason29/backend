@@ -2,7 +2,7 @@
 
 require __DIR__ . '/../../tokenization.php';
 
-respond(['status' => 'sucess', 'message' => $role_name], 200);
+respond(['status' => 'sucess', 'message' => "You can now add user"], 200);
 exit;
 
     

@@ -33,12 +33,11 @@ $user_id = decryptUserId($decoded_token->sub, $encryptionKey);
 #get the user details from the access token
 $email = $decoded_token->user->email;
 $organization_id = $decoded_token->user->organization_id ?? null;
-$role_name = $decoded_token->user->role_name;
+$role = $decoded_token->user->role;
 
 
 #Check if the user has access to the requested resource
 #This function is from permissions.php
-respond(['status' => 'success', 'message' => $decoded_token], 200);
- if (!hasAccess($role_name, $uri, $roles)) {
+ if (!hasAccess($role, $uri, $roles)) {
     respond(['status' => 'error', 'message' => 'Unauthorized access'], 403);
  }
