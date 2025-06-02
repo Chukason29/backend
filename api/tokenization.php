@@ -27,9 +27,10 @@ if (is_array($decoded_token) && isset($decoded_token["message"])) {
     }
 }
 
+#decrypt the user id from the token
 $user_id = decryptUserId($decoded_token->sub, $encryptionKey);
-respond(['status' => 'success', 'message' => $user_id], 200); exit;
 
+#get the user details from the access token
 $email = $decoded_token->user->email;
 $organization_id = $decoded_token->user->organization_id ?? null;
 $role_name = $decoded_token->user->role_name;
