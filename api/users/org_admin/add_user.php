@@ -20,4 +20,7 @@ if (empty($data["name"])) {
 #generate a random password 
 $password = bin2hex(random_bytes(4 )); // 16 characters long
 
-respond(["status" => "success", 'message' => 'User password generated successfully', 'password' => $password], 200);
+$hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+if (emailExists($pdo, $data['email'])) {
+    respond(["status" => "error", 'message' => 'Account already exists'], 400);
+}
