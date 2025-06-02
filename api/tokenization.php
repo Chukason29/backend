@@ -29,7 +29,7 @@ $role_name = $decoded_token->user->role_name;
 
 #Check if the user has access to the requested resource
 #This function is from permissions.php
-respond(['status' => 'success', 'message' => $role_name], 200);
+respond(['status' => 'success', 'message' => $email], 200);
  if (!hasAccess($role_name, $uri, $roles)) {
     respond(['status' => 'error', 'message' => 'Unauthorized access'], 403);
  }
