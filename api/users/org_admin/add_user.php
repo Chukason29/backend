@@ -4,8 +4,20 @@
 #decrypting the user id from the token
 # checking if user has access to the requested resource
 require __DIR__ . '/../../tokenization.php'; 
-
-respond(['status' => 'sucess', 'message' => "You can now add user"], 200);
-exit;
-
     
+$data = json_decode(file_get_contents('php://input'), true);
+
+if (!isset($data['name'], $data['email'], $data['role_id'])) {
+    respond(["status" => "error",'message' => 'All fields are required'], 400);
+}
+
+if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+    respond(["status" => "error", 'message' => 'Invalid email address'], 400);
+}
+if (empty($data["name"])) {
+    respond(["status" => "error", 'message' => 'Name is required'], 400);
+}
+
+if (empty($data['password'])) {
+    respond(["status" => "error", 'message' => 'Password is required'], 400);
+}
