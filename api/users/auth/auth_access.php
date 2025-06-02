@@ -42,7 +42,6 @@ try {
 
     // 3️⃣ Issue new access token
     $jwtSecret = $config['secret']['SECRET_KEY'];
-    $newAccessToken = generateAccessToken($tokenRow['user_id'], $jwtSecret);
 
     #getting user details
     $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
@@ -61,6 +60,7 @@ try {
         respond(["status" => "error", 'message' => 'Role not found'], 500);
         exit;
     }
+    $newAccessToken = generateAccessToken($user['id'], $role["role_name"], $user["name"], $user["email"], $user["organization_id"], $secret, $expiresIn = 3660 * 3);
 
     respond([
         'status' => 'success',
