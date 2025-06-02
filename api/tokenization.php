@@ -16,7 +16,7 @@ $decoded_token = decodeAccessToken($access_token, $jwt_secret);
 if (!$decoded_token) {
     respond(['status' => 'error', 'message' => 'Invalid access token'], 401);
 }
-if (isset($decoded_token->message) && $decoded_token->message->message === 'Token expired') {
+if (isset($decoded_token["message"]) && $decoded_token["message"]["message"] === 'Token expired') {
     require_once __DIR__ . '/refresh_token.php';
     exit;
 }
