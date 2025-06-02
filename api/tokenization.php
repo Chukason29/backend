@@ -16,6 +16,10 @@ $decoded_token = decodeAccessToken($access_token, $jwt_secret);
 if (!$decoded_token) {
     respond(['status' => 'error', 'message' => 'Invalid access token'], 401);
 }
+if (isset($decoded_token->message) && $decoded_token->message === 'Token expired') {
+    require_once __DIR__ . '/refresh_token.php';
+    exit;
+}
 
 $user_id = decryptUserId($decoded_token->sub, $encryptionKey);
 $email = $decoded_token->user->email;
