@@ -27,7 +27,7 @@ if (is_array($decoded_token) && isset($decoded_token["message"])) {
 }
 
 $user_id = decryptUserId($decoded_token->sub, $encryptionKey);
-respond(['status' => 'success', 'message' => $user_id], 200); exit;
+respond(['status' => 'success', 'message' => $decoded_token->sub], 200); exit;
 
 $email = $decoded_token->user->email;
 $organization_id = $decoded_token->user->organization_id ?? null;
