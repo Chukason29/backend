@@ -36,6 +36,10 @@ try {
         ':hashed_password' => $hashedPassword, // Always hash passwords
         ':role_id' => $role_id
     ]);
+    if ($pdo->commit()) {
+        respond(["status" => "success", "message" => "Account Succesfully Created"], 200);
+        exit;
+    }
 } catch (PDOException $e) {
     $pdo->rollBack();
     respond(["status" => "error", 'message' => 'Database error: ' . $e->getMessage()], 500);
