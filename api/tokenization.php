@@ -12,16 +12,22 @@ $access_token = getBearerToken();
 if (!$access_token) {
     respond(['status' => 'error', 'message' => 'Access token is required'], 401);
 }
+
+#decode the access token
 $decoded_token = decodeAccessToken($access_token, $jwt_secret);
 if (!$decoded_token) {
     respond(['status' => 'error', 'message' => 'Invalid access token'], 401);
 }
-if (isset($decoded_token["message"]) && $decoded_token["message"] === 'Expired token') {
-    require_once __DIR__ . '/refresh_token.php';
-    exit;
+#check if decoded token is an array and has a message property
+if (is_array($decoded_token) && isset($decoded_token["message"])) {
+    if($decoded_token["message"] === 'Expired token'){ #checking of the token is expired
+        require_once __DIR__ . '/refresh_token.php'; #refresh the token
+        exit;
+    }
 }
 
 $user_id = decryptUserId($decoded_token->sub, $encryptionKey);
+respond(['status' => 'success', 'message' => $user_id], 200); exit;
 $email = $decoded_token->user->email;
 $organization_id = $decoded_token->user->organization_id ?? null;
 $role_name = $decoded_token->user->role_name;
