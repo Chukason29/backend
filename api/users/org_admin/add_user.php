@@ -17,7 +17,7 @@ if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
 if (empty($data["name"])) {
     respond(["status" => "error", 'message' => 'Name is required'], 400);
 }
+#generate a random password 
+$password = bin2hex(random_bytes(4 )); // 16 characters long
 
-if (empty($data['password'])) {
-    respond(["status" => "error", 'message' => 'Password is required'], 400);
-}
+respond(["status" => "success", 'message' => 'User password generated successfully', 'password' => $password], 200);
