@@ -14,7 +14,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 // Set CORS headers
 //header("Access-Control-Allow-Origin: http://127.0.0.1:3001");
-header("Access-Control-Allow-Origin: https://mighty-clubs-wash.loca.lt");
+header("Access-Control-Allow-Origin: https://late-items-cry.loca.lt");
 header("Access-Control-Allow-Credentials: true"); 
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
@@ -61,16 +61,24 @@ try {
         exit;
     }
     
-    if ($method === 'POST' && $uri === '/api/users/add') {
-        require_once __DIR__ . '/users/org_admin/add_user.php';
+    if ($method === 'POST' && $uri === '/api/role/update_password') {
+        require_once __DIR__ . '/users/auth/update_password.php';
         exit;
     }
     if ($method === 'POST' && $uri === '/api/refresh_token') {
         require_once __DIR__ . '/users/auth/refresh_token.php';
         exit;
     }
+    if ($method === 'POST' && $uri === '/api/organization') {
+        require_once __DIR__ . '/users/auth/organization.php';
+        exit;
+    }
     
-
+    #Organization Admin Routes
+    if ($method === 'POST' && $uri === '/api/users/add') {
+        require_once __DIR__ . '/users/org_admin/add_user.php';
+        exit;
+    }
 
 
     if ($method === 'POST' && $uri === '/api/roles') {
@@ -85,10 +93,7 @@ try {
         require_once __DIR__ . '/super_admin/add_tiers.php';
         exit;
     }
-    if ($method === 'POST' && $uri === '/api/organization') {
-        require_once __DIR__ . '/users/auth/organization.php';
-        exit;
-    }
+
 
     // Fallback
     respond(["status" =>"error", "message" => "Route not found"], 404);
