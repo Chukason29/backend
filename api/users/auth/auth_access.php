@@ -23,7 +23,7 @@ if ($isDev) {
 }
 //$refreshToken = $_COOKIE['refresh_token'] ?? null;
 if (!$refreshToken) {
-    respond(['status' => 'error', 'message' => 'No refresh token provided'], 401);
+    respond(['status' => 'error', 'message' => 'failed authentication'], 401);
 }
 
 // 2️⃣ Check database

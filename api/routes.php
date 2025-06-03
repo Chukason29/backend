@@ -14,7 +14,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 // Set CORS headers
 //header("Access-Control-Allow-Origin: http://127.0.0.1:3001");
-header("Access-Control-Allow-Origin: https://sixty-rules-pump.loca.lt");
+header("Access-Control-Allow-Origin: https://cruel-turtles-hammer.loca.lt");
 header("Access-Control-Allow-Credentials: true"); 
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
