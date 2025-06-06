@@ -123,7 +123,7 @@ function sendHTMLEmail($toEmail, $toName, $verificationLink, $myTemplate, $email
     try {
         // SMTP Configuration
         $mail->isSMTP();
-        $mail->Host = "smtp.gmail.com"; // SMTP server (e.g., hirepurchase.ng)
+        $mail->Host = "smtp.gmail.com"; // SMTP server 
         $mail->SMTPAuth = true;
         $mail->Username = "support@trendsaf.co"; // SMTP Username
         $mail->Password = $email_password; // SMTP Password
@@ -145,6 +145,52 @@ function sendHTMLEmail($toEmail, $toName, $verificationLink, $myTemplate, $email
         $mail->Subject = "Email Verification";
         $mail->Body = $htmlTemplate;
         $mail->AltBody = "Hello $toName, please verify your email by clicking this: $verificationLink"; // Fallback for text-only clients
+        $mail->SMTPDebug = 3; // Or 3 for more details
+        $mail->Debugoutput = 'error_log'; // Sends debug info to PHP error log
+        // Send Email
+        if ($mail->send()) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (Exception $e) {
+        return "Error: {$mail->ErrorInfo}";
+    }
+}
+
+function addUserEmail($toEmail, $toName, $company_name, $initial_password, $verificationLink, $myTemplate, $email_password) {
+    require __DIR__ . '/PHPMailer/src/PHPMailer.php';
+    require __DIR__ . '/PHPMailer/src/SMTP.php';
+    require __DIR__ . '/PHPMailer/src/Exception.php';
+    $mail = new PHPMailer(true);
+
+    try {
+        // SMTP Configuration
+        $mail->isSMTP();
+        $mail->Host = "smtp.gmail.com"; // SMTP server (e.g)
+        $mail->SMTPAuth = true;
+        $mail->Username = "support@trendsaf.co"; // SMTP Username
+        $mail->Password = $email_password; // SMTP Password
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Encryption
+        $mail->Port = 587; // SMTP Port (Gmail: 587, Outlook: 587, SSL: 465)
+
+        // Sender and Recipient
+        $mail->setFrom('support@trendsaf.co', 'Trendsaf BaseFood');
+        $mail->addAddress($toEmail, $toName);
+        #$mail->addReplyTo('admin@hirepurchase.ng', 'Support');
+
+        // Load HTML Template
+        $htmlTemplate = file_get_contents($myTemplate);
+        $htmlTemplate = str_replace('{{name}}', $toName, $htmlTemplate);
+        $htmlTemplate = str_replace('{{company_name}}', $company_name, $htmlTemplate);
+        $htmlTemplate = str_replace('{{initial_password}}', $initial_password, $htmlTemplate);
+        $htmlTemplate = str_replace('{{link}}', $verificationLink, $htmlTemplate);
+
+        // Email Content
+        $mail->isHTML(true);
+        $mail->Subject = "Update Password";
+        $mail->Body = $htmlTemplate;
+        $mail->AltBody = "Hello $toName, kindly update your password by clicking this: $verificationLink"; // Fallback for text-only clients
         $mail->SMTPDebug = 3; // Or 3 for more details
         $mail->Debugoutput = 'error_log'; // Sends debug info to PHP error log
         // Send Email

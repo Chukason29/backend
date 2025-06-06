@@ -109,8 +109,17 @@
     $_SESSION['organization_id'] = $organization_id ?? null;
     $_SESSION['role_name'] = $role_name;
 
-    
-    
+    #Collecting Organization's info
+    $stmt = $pdo->prepare("SELECT * FROM organizations WHERE id = :id");
+    $stmt->bindValue(':id', $organization_id);
+    $stmt->execute();
+    $organization = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$role) {
+        respond(["status" => "error", 'message' => 'Organization not found'], 500);
+        exit;
+    }
+    $_SESSION["organization_name"] = $organization["name"];
+    $_SESSION["subscription_id"] = $organization["subscription_id"];
 
     #TODO ==> Check if the user is organization admin and organization_id is null
     if ($role_name == $config['roles']['ORGANIZATION_ADMIN'] && $user['organization_id'] == null){ 

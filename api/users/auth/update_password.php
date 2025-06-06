@@ -33,10 +33,11 @@
     try {
         $pdo->beginTransaction();
 
-        $sql = "UPDATE users SET password_hash = :hashedPassword WHERE id = :user_id";
+        $sql = "UPDATE users SET password_hash = :hashedPassword, is_active = :is_activr WHERE id = :user_id";
         $stmt = $pdo->prepare($sql);
         $stmt->bindValue(':user_id', $user_id);
         $stmt->bindValue(':hashedPassword', $hashedPassword);
+        $stmt->bindValue(':is_active', true);
         $stmt->execute();
 
      #TODO commit data to database and send link to email address

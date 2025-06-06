@@ -26,6 +26,8 @@ if (emailExists($pdo, $data['email'])) {
 }
 $name = strtolower(sanitizeInput($data["name"]));
 $email = strtolower(sanitizeInput($data["email"]));
+$token = generateTimedToken($email, 172800); //expires in 48hours after creation
+$verifyLink = $config['url']['BASE_URL'].'/auth/update_password?token='.$token;
 
 try {
     $pdo->beginTransaction();
@@ -36,8 +38,14 @@ try {
         ':hashed_password' => $hashedPassword, // Always hash passwords
         ':role_id' => $role_id
     ]);
+    #TODO ==> input the token to the token table with false as the check column
+    $stmt2 = $pdo->prepare("INSERT INTO link_token (email, token) VALUES (:email, :token)");
+    $stmt2->execute([
+        ':email' => $email,
+        ':token' => $token
+    ]);
     if ($pdo->commit()) {
-        respond(["status" => "success", "message" => "Account Succesfully Created"], 200);
+        respond(["status" => "success", "message" => "Account Succesfully Created", "password" => $hashedPassword], 200);
         exit;
     }
 } catch (PDOException $e) {
