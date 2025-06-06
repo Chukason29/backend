@@ -27,6 +27,7 @@ if (emailExists($pdo, $data['email'])) {
 }
 $name = strtolower(sanitizeInput($data["name"]));
 $email = strtolower(sanitizeInput($data["email"]));
+$role_id = $data["role_id"];
 $token = generateTimedToken($email, 172800); //expires in 48hours after creation
 $verifyLink = $config['url']['BASE_URL'].'/auth/update_password?token='.$token;
 $organization_name = $_SESSION["organization_name"];
