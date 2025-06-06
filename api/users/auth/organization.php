@@ -68,6 +68,8 @@
      #TODO commit data to database and send link to email address
     if ($pdo->commit() ){
         $_SESSION['organization_id'] = $organization_id;
+        $_SESSION["organization_name"] = $name;
+        $_SESSION["subscription_id"] = $subscription_id;
         require_once __DIR__ . '/authenticate.php';
     }else{
         respond(["status" => "error", "message" => "Unsuccessful"], 200);   
