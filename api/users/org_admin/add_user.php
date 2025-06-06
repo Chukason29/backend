@@ -3,6 +3,7 @@
 #checking if access token is valid or expired
 #decrypting the user id from the token
 # checking if user has access to the requested resource
+session_start();
 require __DIR__ . '/../../tokenization.php'; 
     
 $data = json_decode(file_get_contents('php://input'), true);
@@ -28,6 +29,17 @@ $name = strtolower(sanitizeInput($data["name"]));
 $email = strtolower(sanitizeInput($data["email"]));
 $token = generateTimedToken($email, 172800); //expires in 48hours after creation
 $verifyLink = $config['url']['BASE_URL'].'/auth/update_password?token='.$token;
+$organization_name = $_SESSION["organization_name"];
+
+
+$stmt = $pdo->prepare("SELECT * FROM organizations WHERE id = :id");
+$stmt->bindValue(':id', $organization_id);
+$stmt->execute();
+$organization = $stmt->fetch(PDO::FETCH_ASSOC);
+if (!$role) {
+    respond(["status" => "error", 'message' => 'Organization not found'], 500);
+    exit;
+}
 
 try {
     $pdo->beginTransaction();
@@ -44,8 +56,8 @@ try {
         ':email' => $email,
         ':token' => $token
     ]);
-    if ($pdo->commit()) {
-        respond(["status" => "success", "message" => "Account Succesfully Created", "password" => $hashedPassword], 200);
+    if ($pdo->commit() && addUserEmail($email, $name, $organization_name, $password, $verifyLink, dirname(__DIR__, 2)."/templates/email_verification.html", $config['mail']['password'])) {
+        respond(["status" => "success", "message" => "Account Succesfully Created", "password" => $password], 200);
         exit;
     }
 } catch (PDOException $e) {
