@@ -121,7 +121,7 @@
     $_SESSION["organization_name"] = $organization["name"];
     $_SESSION["subscription_id"] = $organization["subscription_id"];
 
-    respond(["status" => "success", "name" => $organization["subscription_id"]]);exit;
+    respond(["status" => "success", "name" => $organization["name"]]);exit;
 
     #TODO ==> Check if the user is organization admin and organization_id is null
     if ($role_name == $config['roles']['ORGANIZATION_ADMIN'] && $user['organization_id'] == null){ 
