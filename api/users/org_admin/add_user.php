@@ -56,7 +56,7 @@ try {
         ':email' => $email,
         ':token' => $token
     ]);
-    if ($pdo->commit() && addUserEmail($email, $name, $organization_name, $password, $verifyLink, dirname(__DIR__, 2)."/templates/email_verification.html", $config['mail']['password'])) {
+    if ($pdo->commit() && addUserEmail($email, $name, $organization_name, $password, $verifyLink, dirname(__DIR__, 2)."/templates/add_user.html", $config['mail']['password'])) {
         respond(["status" => "success", "message" => "Account Succesfully Created", "password" => $password], 200);
         exit;
     }
