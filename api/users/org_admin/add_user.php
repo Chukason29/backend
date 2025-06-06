@@ -30,7 +30,7 @@ $email = strtolower(sanitizeInput($data["email"]));
 $token = generateTimedToken($email, 172800); //expires in 48hours after creation
 $verifyLink = $config['url']['BASE_URL'].'/auth/update_password?token='.$token;
 $organization_name = $_SESSION["organization_name"];
-respond(["status" => "success", "name" => $organization_name]);exit;
+#respond(["status" => "success", "name" => $organization_name]);exit;
 
 
 $stmt = $pdo->prepare("SELECT * FROM organizations WHERE id = :id");
